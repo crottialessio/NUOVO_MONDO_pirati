@@ -429,8 +429,36 @@ def baratto(merci_baratto, provviste):
     print(f"  Barattoli spezie: {provviste['barattolo di spezie']:.0f} - totale stimato: {provviste['barattolo di spezie'] * merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni")
     print("=" * 50)
 
-baratto(merci_baratto, provviste)
+def tradimento(merci_baratto, provviste, albatro):
+    import random
+    # Questa funzione va chiamata solo se il giocatore ha armi residue
 
+    ricavo_ipo = (provviste["armi"] * 30) * merci_baratto["perla"]["prezzo stimato"]
 
+    print(
+        f"Durante la notte un rivale del capotribù si presenta al vostro accampamento "
+        f"offrendovi ben 30 perle per ogni arma che avete "
+        f"(ricavo ipotetico di {ricavo_ipo} dobloni)."
+    )
 
+    scelta = input("Accetti la proposta del rivale del capotribù? (s/n): ").strip().lower()
+    while scelta not in ["s", "n"]:
+        print("Scelta non valida, riprovare.")
+        scelta = input("Accetti la proposta del rivale del capotribù? (s/n): ").strip().lower()
 
+    if scelta == "s":
+        provviste["perle"] += provviste["armi"] * 30
+        provviste["armi"] = 0
+
+        scoperto = False
+
+        if albatro is None:
+            scoperto = random.randint(1, 2) == 1
+        elif albatro is True:
+            scoperto = True
+        if scoperto:
+            print("Il capotribù ha scoperto che hai appoggiato il suo rivale.")
+            print("Si presenta al vostro accampamento e stermina il tuo intero equipaggio.")
+            print("GAME OVER")
+    else:
+        pass
