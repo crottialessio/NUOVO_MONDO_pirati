@@ -462,3 +462,22 @@ def tradimento(merci_baratto, provviste, albatro):
         print("Si presenta al vostro accampamento e stermina il tuo intero equipaggio.")
         print("GAME OVER")
 
+
+
+def Ritorno(stato_gioco,CATALOGO_CIBO):
+    #TODO calcolo delle merci per 3 settimane di viaggio e calcolo quante settimane mancano (marinaio) + albatro
+    #per pagare i marinai al rientro viene mostrato il profitto secondo questa 
+    membri_vivi =  stato_gioco["equipaggio"]["cuoco"] + stato_gioco["equipaggio"]["marinaio"] + stato_gioco["equipaggio"]["meccanico"] + stato_gioco["equipaggio"]["medico"] + stato_gioco["equipaggio"]["navigatore"]
+    
+    stato_gioco["cibo"]["verdura"] += CATALOGO_CIBO["verdura"]["consumo"] * membri_vivi * 3
+    stato_gioco["cibo"]["frutta"] += CATALOGO_CIBO["frutta"]["consumo"]  * membri_vivi * 3
+    stato_gioco["cibo"]["carne"] += CATALOGO_CIBO["carne"]["consumo"]   * membri_vivi * 3
+    stato_gioco["cibo"]["acqua"] += CATALOGO_CIBO["acqua"]["consumo"]   * membri_vivi * 3
+
+    if stato_gioco["equipaggio"]["navigatore"] >= 1:
+        settimane = 1
+    else:
+        settimane = 2
+    
+    if albatro == True:
+        settimane+=1
