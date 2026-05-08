@@ -255,14 +255,14 @@ merci_baratto = {
         "diamanti":       2,
         "prezzo stimato": 2
     },
-    "manufatto": {
+    "manufatti": {
         "sale":           0.5,
         "stoffa":         7,
         "coltello":       3,
         "diamanti":       4,
         "prezzo stimato": 2
     },
-    "barattolo di spezie": {
+    "spezie": {
         "sale":           1,
         "stoffa":         3,
         "coltello":       6,
@@ -271,169 +271,165 @@ merci_baratto = {
     }
 }
 
-def baratto(merci_baratto, provviste):
-    print("=" * 50)
-    print("IL CAPO TRIBÙ TI OFFRE DEI COMMERCI")
-    print("Rifiuta armi e medicinali: si barattano solo sale, stoffa, coltelli e diamanti.")
-    print("=" * 50)
     
-    if provviste["sale"] >= 0.5:
-        print("\n--- BARATTO: SALE ---")
-        print("Offrirai tutti i tuoi sacchi di sale. Scegli una sola opzione:")
-        perle = provviste["sale"]/merci_baratto["perla"]["sale"]
-        manufatti = provviste["sale"]/merci_baratto["manufatto"]["sale"]
-        spezie = provviste["sale"]/merci_baratto["barattolo di spezie"]["sale"]
+def baratto_sale(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+    print("\n--- BARATTO: SALE ---")
+    print("Offrirai tutti i tuoi sacchi di sale. Scegli una sola opzione:")
+    perle = stato_gioco["merci"]["sale"]/merci_baratto["perla"]["sale"]
+    manufatti = stato_gioco["merci"]["sale"]/merci_baratto["manufatti"]["sale"]
+    spezie = stato_gioco["merci"]["sale"]/merci_baratto["spezie"]["sale"]
 
-        print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-        print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatto']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatto']['prezzo stimato']:.0f} dobloni)")
-        print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['barattolo di spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
+    print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
+    print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    
+    corretto = False
+    while not corretto:
+        scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
         
-        corretto = False
-        while not corretto:
-            scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-            
-            if scelta not in ["1", "2", "3"]:
-                print("  Scelta non valida, riprova.")
+        if scelta not in ["1", "2", "3"]:
+            print("  Scelta non valida, riprova.")
 
-            elif scelta == "1":
-                provviste["sale"] = 0
-                provviste["perle"] += perle
-                print(f"  Hai ottenuto {perle:.0f} perle!")
-                corretto = True
+        elif scelta == "1":
+            stato_gioco["merci"]["sale"] = 0
+            stato_gioco["merci"]["perle"] += perle
+            print(f"  Hai ottenuto {perle:.0f} perle!")
+            corretto = True
 
-            elif scelta == "2":
-                provviste["sale"] = 0
-                provviste["manufatti"] += manufatti
-                print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
-                corretto = True
-            
-            elif scelta == "3":
-                provviste["sale"] = 0
-                provviste["barattolo di spezie"] += spezie
-                print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
-                corretto = True
-
-    if provviste["stoffa"] >= 3:
-        print("\n--- BARATTO: STOFFA ---")
-        print("Offrirai tutti i tuoi teli di stoffa. Scegli una sola opzione:")
-        perle = provviste["stoffa"]/merci_baratto["perla"]["stoffa"]
-        manufatti = provviste["stoffa"]/merci_baratto["manufatto"]["stoffa"]
-        spezie = provviste["stoffa"]/merci_baratto["barattolo di spezie"]["stoffa"]
-
-        print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-        print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatto']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatto']['prezzo stimato']:.0f} dobloni)")
-        print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['barattolo di spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni)")
+        elif scelta == "2":
+            stato_gioco["merci"]["sale"] = 0
+            stato_gioco["merci"]["manufatti"] += manufatti
+            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            corretto = True
         
-        corretto = False
-        while not corretto:
-            scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-            
-            if scelta not in ["1", "2", "3"]:
-                print("  Scelta non valida, riprova.")
+        elif scelta == "3":
+            stato_gioco["merci"]["sale"] = 0
+            stato_gioco["merci"]["spezie"] += spezie
+            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            corretto = True
 
-            elif scelta == "1":
-                provviste["stoffa"] = 0
-                provviste["perle"] += perle
-                print(f"  Hai ottenuto {perle:.0f} perle!")
-                corretto = True
+def baratto_stoffa(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+    print("\n--- BARATTO: STOFFA ---")
+    print("Offrirai tutti i tuoi teli di stoffa. Scegli una sola opzione:")
+    perle = stato_gioco["merci"]["stoffa"]/merci_baratto["perla"]["stoffa"]
+    manufatti = stato_gioco["merci"]["stoffa"]/merci_baratto["manufatti"]["stoffa"]
+    spezie = stato_gioco["merci"]["stoffa"]/merci_baratto["spezie"]["stoffa"]
 
-            elif scelta == "2":
-                provviste["stoffa"] = 0
-                provviste["manufatti"] += manufatti
-                print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
-                corretto = True
-            
-            elif scelta == "3":
-                provviste["stoffa"] = 0
-                provviste["barattolo di spezie"] += spezie
-                print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
-                corretto = True
-
-    if provviste["coltelli"] >= 1:
-        print("\n--- BARATTO: COLTELLI ---")
-        print("Offrirai tutti i tuoi coltelli. Scegli una sola opzione:")
-        perle = provviste["coltelli"]/merci_baratto["perla"]["coltello"]
-        manufatti = provviste["coltelli"]/merci_baratto["manufatto"]["coltello"]
-        spezie = provviste["coltelli"]/merci_baratto["barattolo di spezie"]["coltello"]
-
-        print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-        print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatto']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatto']['prezzo stimato']:.0f} dobloni)")
-        print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['barattolo di spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
+    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
+    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    
+    corretto = False
+    while not corretto:
+        scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
         
-        corretto = False
-        while not corretto:
-            scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-            
-            if scelta not in ["1", "2", "3"]:
-                print("  Scelta non valida, riprova.")
+        if scelta not in ["1", "2", "3"]:
+            print("  Scelta non valida, riprova.")
 
-            elif scelta == "1":
-                provviste["coltelli"] = 0
-                provviste["perle"] += perle
-                print(f"  Hai ottenuto {perle:.0f} perle!")
-                corretto = True
+        elif scelta == "1":
+            stato_gioco["merci"]["stoffa"] = 0
+            stato_gioco["merci"]["perle"] += perle
+            print(f"  Hai ottenuto {perle:.0f} perle!")
+            corretto = True
 
-            elif scelta == "2":
-                provviste["coltelli"] = 0
-                provviste["manufatti"] += manufatti
-                print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
-                corretto = True
-            
-            elif scelta == "3":
-                provviste["coltelli"] = 0
-                provviste["barattolo di spezie"] += spezie
-                print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
-                corretto = True
-
-    if provviste["diamanti"] >= 2:
-        print("\n--- BARATTO: DIAMANTI ---")
-        print("Offrirai tutti i tuoi diamanti. Scegli una sola opzione:")
-        perle = provviste["diamanti"]/merci_baratto["perla"]["diamanti"]
-        manufatti = provviste["diamanti"]/merci_baratto["manufatto"]["diamanti"]
-        spezie = provviste["diamanti"]/merci_baratto["barattolo di spezie"]["diamanti"]
-
-        print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-        print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatto']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatto']['prezzo stimato']:.0f} dobloni)")
-        print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['barattolo di spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni)")
+        elif scelta == "2":
+            stato_gioco["merci"]["stoffa"] = 0
+            stato_gioco["merci"]["manufatti"] += manufatti
+            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            corretto = True
         
-        corretto = False
-        while not corretto:
-            scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
+        elif scelta == "3":
+            stato_gioco["merci"]["stoffa"] = 0
+            stato_gioco["merci"]["spezie"] += spezie
+            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            corretto = True
+
+def baratto_coltelli(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+    print("\n--- BARATTO: COLTELLI ---")
+    print("Offrirai tutti i tuoi coltelli. Scegli una sola opzione:")
+    perle = stato_gioco["merci"]["coltelli"]/merci_baratto["perla"]["coltello"]
+    manufatti = stato_gioco["merci"]["coltelli"]/merci_baratto["manufatti"]["coltello"]
+    spezie = stato_gioco["merci"]["coltelli"]/merci_baratto["spezie"]["coltello"]
+
+    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
+    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
+    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    
+    corretto = False
+    while not corretto:
+        scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
+        
+        if scelta not in ["1", "2", "3"]:
+            print("  Scelta non valida, riprova.")
+
+        elif scelta == "1":
+            stato_gioco["merci"]["coltelli"] = 0
+            stato_gioco["merci"]["perle"] += perle
+            print(f"  Hai ottenuto {perle:.0f} perle!")
+            corretto = True
+
+        elif scelta == "2":
+            stato_gioco["merci"]["coltelli"] = 0
+            stato_gioco["merci"]["manufatti"] += manufatti
+            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            corretto = True
+        
+        elif scelta == "3":
+            stato_gioco["merci"]["coltelli"] = 0
+            stato_gioco["merci"]["spezie"] += spezie
+            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            corretto = True
+
+def baratto_diamanti(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+    print("\n--- BARATTO: DIAMANTI ---")
+    print("Offrirai tutti i tuoi diamanti. Scegli una sola opzione:")
+    perle = stato_gioco["merci"]["diamanti"]/merci_baratto["perla"]["diamanti"]
+    manufatti = stato_gioco["merci"]["diamanti"]/merci_baratto["manufatti"]["diamanti"]
+    spezie = stato_gioco["merci"]["diamanti"]/merci_baratto["spezie"]["diamanti"]
+
+    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
+    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
+    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    
+    corretto = False
+    while not corretto:
+        scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
+        
+        if scelta not in ["1", "2", "3"]:
+            print("  Scelta non valida, riprova.")
+
+        elif scelta == "1":
+            stato_gioco["merci"]["diamanti"] = 0
+            stato_gioco["merci"]["perle"] += perle
+            print(f"  Hai ottenuto {perle:.0f} perle!")
+            corretto = True
+
+        elif scelta == "2":
+            stato_gioco["merci"]["diamanti"] = 0
+            stato_gioco["merci"]["manufatti"] += manufatti
+            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            corretto = True
+        
+        elif scelta == "3":
+            stato_gioco["merci"]["diamanti"] = 0
+            stato_gioco["merci"]["spezie"] += spezie
+            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            corretto = True
             
-            if scelta not in ["1", "2", "3"]:
-                print("  Scelta non valida, riprova.")
-
-            elif scelta == "1":
-                provviste["diamanti"] = 0
-                provviste["perle"] += perle
-                print(f"  Hai ottenuto {perle:.0f} perle!")
-                corretto = True
-
-            elif scelta == "2":
-                provviste["diamanti"] = 0
-                provviste["manufatti"] += manufatti
-                print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
-                corretto = True
-            
-            elif scelta == "3":
-                provviste["diamanti"] = 0
-                provviste["barattolo di spezie"] += spezie
-                print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
-                corretto = True
-
+def Resoconto_baratto(merci_baratto, stato_gioco):
     print("\n" + "=" * 50)
     print("BARATTO CONCLUSO!")
     print("Ecco il resoconto, hai ottenuto:")
-    print(f"  Perle:            {provviste['perle']:.0f} - totale stimato: {provviste['perle'] * merci_baratto['perla']['prezzo stimato']:.0f} dobloni")
-    print(f"  Manufatti:        {provviste['manufatti']:.0f} - totale stimato: {provviste['manufatti'] * merci_baratto['manufatto']['prezzo stimato']:.0f} dobloni")
-    print(f"  Barattoli spezie: {provviste['barattolo di spezie']:.0f} - totale stimato: {provviste['barattolo di spezie'] * merci_baratto['barattolo di spezie']['prezzo stimato']:.0f} dobloni")
+    print(f"  Perle:            {stato_gioco["merci"]['perle']:.0f} - totale stimato: {stato_gioco["merci"]['perle'] * merci_baratto['perla']['prezzo stimato']:.0f} dobloni")
+    print(f"  Manufatti:        {stato_gioco["merci"]['manufatti']:.0f} - totale stimato: {stato_gioco["merci"]['manufatti'] * merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni")
+    print(f"  Barattoli spezie: {stato_gioco["merci"]['spezie']:.0f} - totale stimato: {stato_gioco["merci"]['spezie'] * merci_baratto['spezie']['prezzo stimato']:.0f} dobloni")
     print("=" * 50)
 
-def tradimento(merci_baratto, provviste, albatro):
+def tradimento(merci_baratto, stato_gioco, albatro): #TODO ricontrollo e se possibile semplificazione della funzione
     import random
     # Questa funzione va chiamata solo se il giocatore ha armi residue
 
-    ricavo_ipo = provviste["armi"] * 30 * merci_baratto["perla"]["prezzo stimato"]
+    ricavo_ipo = stato_gioco["merci"]["armi"] * 30 * merci_baratto["perla"]["prezzo stimato"]
 
     print(f"\nDurante la notte un rivale del capotribù si presenta al vostro accampamento ")
     print(f"offrendovi ben 30 perle per ogni arma che avete ")
@@ -447,8 +443,8 @@ def tradimento(merci_baratto, provviste, albatro):
     if scelta == "n":
         return
 
-    provviste["perle"] += provviste["armi"] * 30
-    provviste["armi"] = 0
+    stato_gioco["merci"]["perle"] += stato_gioco["merci"]["armi"] * 30
+    stato_gioco["merci"]["armi"] = 0
 
     scoperto = False
 
@@ -464,9 +460,7 @@ def tradimento(merci_baratto, provviste, albatro):
 
 
 
-def Ritorno(stato_gioco,CATALOGO_CIBO):
-    #TODO calcolo delle merci per 3 settimane di viaggio e calcolo quante settimane mancano (marinaio) + albatro
-    #per pagare i marinai al rientro viene mostrato il profitto secondo questa 
+def calcolo_settimane_e_rifornimento(stato_gioco,CATALOGO_CIBO,albatro):
     membri_vivi =  stato_gioco["equipaggio"]["cuoco"] + stato_gioco["equipaggio"]["marinaio"] + stato_gioco["equipaggio"]["meccanico"] + stato_gioco["equipaggio"]["medico"] + stato_gioco["equipaggio"]["navigatore"]
     
     stato_gioco["cibo"]["verdura"] += CATALOGO_CIBO["verdura"]["consumo"] * membri_vivi * 3
@@ -475,9 +469,108 @@ def Ritorno(stato_gioco,CATALOGO_CIBO):
     stato_gioco["cibo"]["acqua"] += CATALOGO_CIBO["acqua"]["consumo"]   * membri_vivi * 3
 
     if stato_gioco["equipaggio"]["navigatore"] >= 1:
-        settimane = 1
+        settimane_agg = 1
     else:
-        settimane = 2
+        settimane_agg = 2
     
     if albatro == True:
-        settimane+=1
+        settimane_agg+=1
+    
+    return settimane_agg #TODO sommare settimane aggiuntive a settimane nel main
+
+def Profitto(stato_gioco,merci_baratto):
+    import random
+    oscillazione=random.choice([0.5,1,2])
+
+    profitto = (
+        stato_gioco["merci"]["perle"]*(merci_baratto["perla"]["prezzo stimato"]*oscillazione)+
+        stato_gioco["merci"]["manufatti"]*(merci_baratto["manufatti"]["prezzo stimato"]*oscillazione)+
+        stato_gioco["merci"]["spezie"]*(merci_baratto["spezie"]["prezzo stimato"]*oscillazione)
+        )
+    
+    return profitto
+
+def Calcolo_spesa_equipaggio(stato_gioco,RUOLI,settimane):
+    spesa_equip=(
+        (stato_gioco["equipaggio"]["cuoco"]* RUOLI["cuoco"]["paga_settimanale"]*settimane)+
+        (stato_gioco["equipaggio"]["marinaio"]* RUOLI["marinaio"]["paga_settimanale"]*settimane)+
+        (stato_gioco["equipaggio"]["meccanico"]* RUOLI["meccanico"]["paga_settimanale"]*settimane)+
+        (stato_gioco["equipaggio"]["medico"]* RUOLI["medico"]["paga_settimanale"]*settimane)+
+        (stato_gioco["equipaggio"]["navigatore"]* RUOLI["navigatore"]["paga_settimanale"]*settimane)
+        )
+    return spesa_equip
+
+def Stampa_situazione_economica(profitto,stato_gioco,spesa_equip):
+
+    print(f"il profitto ricavato dalla vendita delle tue merci è di {profitto} dobloni !!!")
+    stato_gioco["monete"]+=profitto
+    print(f"questi si sommano ai tuoi dobloni residui e raggiungi la cospiqua somma di {stato_gioco["monete"]}")
+    print(f"ricordati però che devi pagare i prodi membri del tuo equipaggio che ti hanno accompagnato nella tua avventura")
+    print(f"dovrai pagare in totale una somma pari a {spesa_equip}")
+    stato_gioco["monete"]-=spesa_equip
+    print(f"questo è quello che ti rimane: {stato_gioco["monete"]} dobloni") #TODO nel main fare un if che se monete < 0 chiama la funzione scelta
+
+def Scelta():
+    print("Purtroppo i tuoi dobloni non bastano a coprire le spese dell'equipaggio")
+    scelta=input("vuoi mettere all'asta la tua nave nel tentativo di ricavarne abbastanza per ripagare i tuoi uomini? (s/n) ").strip().lower()
+    
+    while scelta not in ["s","n"]:
+        print("scelta non valida")
+        scelta=input("vuoi mettere all'asta la tua nave nel tentativo di ricavarne abbastanza per ripagare i tuoi uomini? (s/n) ").strip().lower()
+    
+    return scelta #TODO nel main fare un if che se scelta == s chiama la funzione Asta, altrimenti chiama bad ending
+
+def Asta(stato_gioco):
+    import random
+    valori_temp=[500,550,600,650,700,750,800,850,1200,500,550,600,650,700,750,800,850,1200]
+    valori=[50,300,400,450]
+    
+    print("Questa è l'asta, ti verranno fatte delle offerte per la tua nave, che potrai accettare o rifiutare")
+
+    risposta=""
+    while risposta != "s":
+        lista=random.randint(1,2)
+
+        if lista == 1:
+            valore=random.randint(1,len(valori_temp))
+            offerta=valori_temp[valore]
+            print(f"un offerente ti propone {offerta} dobloni")
+            risposta=input("accetti? (s/n) ").strip().lower()
+            while risposta not in ["s","n"]:
+                print("scelta non valida")
+                risposta=input("accetti? (s/n) ").strip().lower()
+            valori_temp.pop(valore)
+
+        else:
+            valore=random.randint(1,len(valori))
+            offerta=valori[valore]
+            print(f"un offerente ti propone {offerta}")
+            risposta=input("accetti? (s/n) ").strip().lower()
+            while risposta not in ["s","n"]:
+                print("scelta non valida")
+                risposta=input("accetti? (s/n) ").strip().lower()
+       
+    stato_gioco["monete"]+=offerta
+
+def Good_ending(stato_gioco):
+
+    if stato_gioco["monete"] > 2000:
+        print(f"sei riuscito a portarti a casa ben {stato_gioco["monete"]} dobloni, più di quelli che avevi inizialmente congratulazioni !!!")
+    
+    elif 1000<= stato_gioco["monete"] <= 2000 :
+        print(f"sei riuscito a portarti a casa ben {stato_gioco["monete"]} dobloni, non male !!")
+    
+    elif 10 < stato_gioco["monete"] < 1000:
+        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} dobloni, poteva andare meglio, ma è già qualcosa !")
+    
+    elif 1 < stato_gioco["monete"] <= 10:
+        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} dobloni, il giusto per comprati un gelato")
+
+    else:
+        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} singolo doblone, una misera consolazione")
+
+def Neutral_ending():
+    print("sei riuscito a ripagare il tuo equipaggio ma non ti è rimasto nulla...tanta fatica per niente")
+
+def Bad_ending():
+    print("non sei riuscito a ripagare nemmeno il tuo equipaggio, non è stata proprio una bella idea quella del viaggio verso il nuovo mondo")
