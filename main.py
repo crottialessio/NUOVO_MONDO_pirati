@@ -243,7 +243,7 @@
 
 
 
-
+moltiplicatori_razioni = {"verdura": 1, "frutta": 1, "carne": 1, "acqua": 1}
 
 
 
@@ -271,7 +271,76 @@ merci_baratto = {
     }
 }
 
+def Calcolo_Membri(stato_gioco):
+    equipaggio = stato_gioco["equipaggio"]["cuoco"] + stato_gioco["equipaggio"]["marinaio"] + stato_gioco["equipaggio"]["meccanico"] + stato_gioco["equipaggio"]["medico"] + stato_gioco["equipaggio"]["navigatore"]
+    return equipaggio
+
+def Calcolo_cibo_1_sett(CATALOGO_CIBO,stato_gioco):
+    membri_vivi = Calcolo_Membri(stato_gioco)
+    verdura = CATALOGO_CIBO["verdura"]["consumo"] * membri_vivi
+    frutta = CATALOGO_CIBO["frutta"]["consumo"] * membri_vivi
+    carne = CATALOGO_CIBO["carne"]["consumo"] * membri_vivi
+    acqua = CATALOGO_CIBO["acqua"]["consumo"] * membri_vivi
+    return [verdura,frutta,carne,acqua]
+
+def Sottrai_consumo_settimana(stato_gioco, CATALOGO_CIBO, moltiplicatori_razioni):
+    cibi = Calcolo_cibo_1_sett(CATALOGO_CIBO, stato_gioco)
+    tipi = ["verdura", "frutta", "carne", "acqua"]
+    for i, tipo in enumerate(tipi):
+        stato_gioco["cibo"][tipo] -= cibi[i] * moltiplicatori_razioni[tipo]
+        if stato_gioco["cibo"][tipo] < 0:
+            stato_gioco["cibo"][tipo] = 0
+
+def Stato_cibo(cibo, fabbisogno_equip):
+    if cibo <= 0:
+        return "esaurita"
+    elif cibo < fabbisogno_equip:
+        return "insufficiente"
+    elif cibo >= fabbisogno_equip * 2:
+        return "abbondante"
+    else:
+        return "normale"
+
+def Chiedi_modifica_razione(cibo, stato):
+    if stato == "insufficiente":
+        print(f"Attenzione: le scorte di {cibo} non bastano per le settimane restanti!")
+        scelta = input("Vuoi dimezzare le razioni? (s/n): ").strip().lower()
+    elif stato == "abbondante":
+        print(f"Le scorte di {cibo} sono abbondanti!")
+        scelta = input("Vuoi raddoppiare le razioni? (s/n): ").strip().lower()
+    else:
+        return "n"
     
+    while scelta not in ["s", "n"]:
+        print("Scelta non valida.")
+        scelta = input("(s/n): ").strip().lower()
+    return scelta
+
+def Aggiorna_moltiplicatore_e_morale(cibo, stato, scelta, moltiplicatori, delta_morale):
+    if stato == "esaurita":
+        delta_morale -= 10
+    elif stato == "insufficiente" and scelta == "s":
+        moltiplicatori[cibo] *= 0.5
+        delta_morale -= 5
+    elif stato == "abbondante" and scelta == "s":
+        moltiplicatori[cibo] *= 2
+        delta_morale += 5
+    return delta_morale
+
+def Controllo_scorte(stato_gioco, CATALOGO_CIBO, settimane_restanti, moltiplicatori, delta_morale):
+    Sottrai_consumo_settimana(stato_gioco, CATALOGO_CIBO, moltiplicatori)
+    
+    cibi = Calcolo_cibo_1_sett(CATALOGO_CIBO, stato_gioco)
+    tipi = ["verdura", "frutta", "carne", "acqua"]
+    
+    for i, tipo in enumerate(tipi):
+        fabbisogno = cibi[i] * moltiplicatori[tipo] * settimane_restanti
+        stato = Stato_cibo(stato_gioco["cibo"][tipo], fabbisogno)
+        scelta = Chiedi_modifica_razione(tipo, stato)
+        delta_morale = Aggiorna_moltiplicatore_e_morale(tipo, stato, scelta, moltiplicatori, delta_morale)
+    
+    return delta_morale
+
 def baratto_sale(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
     print("\n--- BARATTO: SALE ---")
     print("Offrirai tutti i tuoi sacchi di sale. Scegli una sola opzione:")
@@ -465,13 +534,14 @@ def Tradimento(stato_gioco,albatro):
 
     return scoperto
 
-def calcolo_settimane_e_rifornimento(stato_gioco,CATALOGO_CIBO,albatro):
-    membri_vivi =  stato_gioco["equipaggio"]["cuoco"] + stato_gioco["equipaggio"]["marinaio"] + stato_gioco["equipaggio"]["meccanico"] + stato_gioco["equipaggio"]["medico"] + stato_gioco["equipaggio"]["navigatore"]
+
+def calcolo_settimane_e_rifornimento(stato_gioco,albatro, CATALOGO_CIBO):
+    cibi=Calcolo_cibo_1_sett(CATALOGO_CIBO)
     
-    stato_gioco["cibo"]["verdura"] += CATALOGO_CIBO["verdura"]["consumo"] * membri_vivi * 3
-    stato_gioco["cibo"]["frutta"] += CATALOGO_CIBO["frutta"]["consumo"]  * membri_vivi * 3
-    stato_gioco["cibo"]["carne"] += CATALOGO_CIBO["carne"]["consumo"]   * membri_vivi * 3
-    stato_gioco["cibo"]["acqua"] += CATALOGO_CIBO["acqua"]["consumo"]   * membri_vivi * 3
+    stato_gioco["cibo"]["verdura"] +=cibi[0] * 3
+    stato_gioco["cibo"]["frutta"] += cibi[1] * 3
+    stato_gioco["cibo"]["carne"] += cibi[2] * 3
+    stato_gioco["cibo"]["acqua"] += cibi[3] * 3
 
     if stato_gioco["equipaggio"]["navigatore"] >= 1:
         settimane_agg = 1
