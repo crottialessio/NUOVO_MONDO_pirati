@@ -305,8 +305,6 @@ def fase_ingaggio():
  
  
  
- 
- 
 nuovi_membri=  {
     1: {
         "ruolo": "cuoco",
@@ -359,7 +357,7 @@ equipaggio ={
         "ruolo": "marinaio",
         "paga_settimanale": 10,
         "morale": 100,
-        "vivo": True,
+        "vivo": False,
         "ingaggiato": True
     },
     7: {
@@ -399,7 +397,9 @@ ruoli_costi={"cuoco":15,"marinaio":10,"meccanico":15,"medico":25,"navigatore":20
 """
 equipaggiamento={"verdura":100,"carne":100,"acqua":100,"frutta":100,"medicinali":100,"armi":100,"stoffe":100}"""
 qta_da_perdere=[0.5, 0.33 ,0.25, 0.2 ]
- 
+
+scorte={
+ "verdura":100,"acqua":100,"carne":100,"frutta":100}
  
 equipaggiamento={
     "verdura": {"qta":100,"prezzo":0.5},
@@ -438,7 +438,7 @@ def Min_sparo_difesa(equipaggio_in,merci_in,funz_n_vivi):
     qta_vivi=funz_n_vivi(equipaggio_in)
     tentativi=min(qta_vivi,n_armi)
     return tentativi
-
+ 
 def ce_ruolo(equipaggio_in,ruolo_ind):
     for membro in equipaggio_in.values():
         if membro["ruolo"] == ruolo_ind and membro["vivo"]==True:
@@ -578,12 +578,12 @@ def avvistamento_scialuppa(funz_decisione,merci_in,ruoli_base,equipaggio_in):
     else:
         merce_iniziale=merci_in.copy()
         for i in range (4):
-            
+           
             nuovo_id=max(equipaggio_in.keys())+1
             morale_cas=random.randint(25,75)
             ruoli=list(ruoli_base.keys())
             ruolo_cas=random.choice(ruoli)
-            
+           
             naufrago_creato={
             "ruolo":ruolo_cas,
             "paga_settimanale":ruoli_base[ruolo_cas],
@@ -596,8 +596,8 @@ def avvistamento_scialuppa(funz_decisione,merci_in,ruoli_base,equipaggio_in):
             merci_cas=random.randint(10,20)
             merci_in[i]+=merci_cas
         return decisione,merce_iniziale
-
-
+ 
+ 
 def epidemia(equipaggio_in,merci_in,ce_medico):
     conta_malati=0
     conta_morti=0
@@ -609,10 +609,10 @@ def epidemia(equipaggio_in,merci_in,ce_medico):
             ott_malattia=random.randint(1,100)
             if ott_malattia<=70:
                 conta_malati+=1
-                
+               
                 if presenza_med==True and merci_in["medicinali"]>=1:
-                    
-                
+                   
+               
                     equipaggio_in[i]["vivo"]=True
                     merci_in["medicinali"]-=1
                     medicinali_persi+=1
@@ -621,15 +621,15 @@ def epidemia(equipaggio_in,merci_in,ce_medico):
                     equipaggio_in[i]["vivo"]=False
                     conta_morti+=1
     return conta_malati,conta_morti,conta_guariti,medicinali_persi
-
+ 
 def attacco_pirata(equipaggio_in,funz_conta_vivi,merci_in,funz_min_sparo):
     n_pirati=random.randint(3,10)
     n_vivi=funz_conta_vivi(equipaggio_in)
     n_difensori=funz_min_sparo(equipaggio_in, merci_in, funz_conta_vivi)
     merci_in["armi"]-=n_difensori
     uomini_persi=min(n_pirati-n_difensori,n_vivi)
-    #print(uomini_persi,n_pirati)
-    
+   
+   
     if uomini_persi>=1:
         eq_vivi=[]
         for i in equipaggio_in:
@@ -639,11 +639,11 @@ def attacco_pirata(equipaggio_in,funz_conta_vivi,merci_in,funz_min_sparo):
             morto=random.choice(eq_vivi)
             equipaggio_in[morto]["vivo"]=False
             eq_vivi.remove(morto)
-    
+   
     return uomini_persi,n_pirati,n_difensori
-
-
-
+ 
+ 
+ 
 def avvistamento_isola(funz_dec,albatro_morto,merci_in):
     domanda="viene avvistata un isola, ci si vuole andare??"
     risposta=funz_dec(domanda)
@@ -659,7 +659,7 @@ def avvistamento_isola(funz_dec,albatro_morto,merci_in):
             if ostilità==1:
                 return "ostile",None,sett_aggiuntive
             else:
-                
+               
                 merci_prec=merci_in.copy()
                 for i in merci_in:
                     if albatro_morto==False:
@@ -668,129 +668,167 @@ def avvistamento_isola(funz_dec,albatro_morto,merci_in):
                         qta_cas=random.randint(5,20)
                     merci_in[i]+=qta_cas
                 return "abitata",merci_prec,sett_aggiuntive
-    
+def calcola_riepilogo_sc_mc(ogg,iter):
+        qta=ogg[iter]
+        return iter,qta
 
+def calcola_riepilogo(merci_in,scorte_in,equipaggio_in):
+    print("---->FINE SETTIMANA<----")
+    print("RIEPILOGO DELLA SETTIMANA")
+    print(f"\nRIEPILOGO MERCI ")
+    for m in merci_in:
+        merce,quantità=calcola_riepilogo_sc_mc(merci_in,m)
+        print(f"{merce}: {quantità}")
+    print(f"\n RIEPILOGO SCORTE ")
+    for s in scorte_in:
+        merce_sc,quantità_sc=calcola_riepilogo_sc_mc(scorte,s)
+        if s=="acqua":
+            print(f"{merce_sc}: {quantità_sc} barili")
+        else:
+            print(f"{merce_sc}: {quantità_sc} ")
+    print(f"\nRIEPILOGO EQUIPAGGIO")
+    for i in equipaggio_in:
+        if equipaggio_in[i]["vivo"]==True:
+            print(f"{i} {equipaggio_in[i]["ruolo"]} morale: {equipaggio_in[i]["morale"]}")
+    #TANTO DIFFICILE SEPARARE I PRINT DAL CALCOLO
+calcola_riepilogo(merci,scorte,equipaggio)
+ 
 
-
+ 
 #for i in range (settimane):       #!FOR INIZIALEEEEEEEEEE
 #n_evento=random.randint(0,12)
 #*"""        
 #               TOGLI IN CASO DI DEBUG LE DUE RIGHE CON STO COLORE
-
-#n_evento=13  #*TOGLIERE IN CASO DEBUG
  
-conta_set=0
+#n_evento=13  #*TOGLIERE IN CASO DEBUG
+li_eventi=[0,1,2,3,4,5,6,7,8,9,10,11,90,91,12,13,14,15,16,17,18]
+conta_set=1
 while settimane!=conta_set:
-
-    n_evento=random.randint(0,18)
+    n_evento=random.choice(li_eventi)
+    print(n_evento)
     print(f"⏱️⏱️-----SETTIMANA {conta_set}----- ⏱️⏱️")
-    
+   
     if  n_evento==0:
         pg_morto=uomo_in_mare(equipaggio)
         print(f"---EVENTO UMOMO IN MARE--- \n  il {pg_morto.upper()} è caduto in mare ed è MORTO")
+        li_eventi.remove(0)
     elif n_evento==1:
         equipaggiamento,perdite_verdure=prova_unica(equipaggiamento,"verdura",qta_da_perdere)
         print(f"---EVENTO VERDURA IN MARE--- \n   una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_verdure} Kg di VERDURE  ")
+        li_eventi.remove(n_evento)
     elif n_evento==2:
         equipaggiamento,perdite_frutta=prova_unica(equipaggiamento,"frutta",qta_da_perdere)
         print(f"---EVENTO FRUTTA IN MARE--- \n   una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_frutta} Kg di FRUTTA  ")
+        li_eventi.remove(n_evento)
     elif n_evento==3:
         equipaggiamento,perdite_carne=prova_unica(equipaggiamento,"carne",qta_da_perdere)
         print(f"---EVENTO CARNE IN MARE--- \n   una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_carne} Kg di CARNE  ")
-    
+        li_eventi.remove(n_evento)
     elif n_evento==4:
         equipaggiamento,perdite_acqua=prova_unica(equipaggiamento,"acqua",qta_da_perdere)
         print(f"---EVENTO ACQUA IN MARE--- \n   una violenta tempesta ha trasportato in mare  {perdite_acqua} BARILI D'ACQUA  ")
+        li_eventi.remove(n_evento)
     # piu materiale
     elif n_evento==5:
         equipaggiamento,qta_pescata=tempesta_miracolosa(equipaggiamento,"carne")
         print(f"---EVENTO APESCA MIRACOLOSA--- \n durante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE ")
-    
+        li_eventi.remove(n_evento)
+ 
     elif n_evento==6:
         equipaggiamento,qta_acqua=tempesta_miracolosa(equipaggiamento,"acqua")
         print(f"---EVENTO TEMPESTA MIRACOLOSA --- \n durante la tempesta dei coraggiosi uomini hanno riempito d'ACQUA {qta_acqua} BARILI VUOTI ")
+        li_eventi.remove(n_evento)
     # PIU MORALE E MENO 1 SETT
     elif n_evento==7:
         equipaggio,settimane,morale_agg=vento_favorevole(settimane,equipaggio)
         print(f"---EVENTO VENTO FAVOREVOLE--- \n un vento favorevole, permette di ACCORCIARE di 1 SETTIMANA il viaggio \n ogni membro dell'equipaggio AUMENTA il MORALE di {morale_agg}")
-        #print(equipaggio)
-    
+        li_eventi.remove(n_evento)
+   
     #perdita mat utilizzabile
     elif n_evento==8:
         equipaggiamento,perdite_medicinali=prova_unica(equipaggiamento,"medicinali",qta_da_perdere)
         print(f"---EVENTO CATTIVO TEMPO--- \n   il cattivo tempo ha rovesciato {perdite_medicinali} BOTTIGLIE DI MEDICINALI")
+        li_eventi.remove(n_evento)
     elif n_evento==9:
         equipaggiamento,perdite_armi=prova_unica(equipaggiamento,"armi",qta_da_perdere)
         print(f"---EVENTO ONDATA--- \n   una onda altissima ha trasportato in mare {perdite_armi} ARMI")
+        li_eventi.remove(n_evento)
     elif n_evento==10:
         equipaggiamento,perdite_stoffe=prova_unica(equipaggiamento,"stoffe",qta_da_perdere)
         print(f"---EVENTO INFESTAZIONE RATTI--- \n   dei RATTI hanno mordicchiato e rovinato {perdite_stoffe} STOFFE  :(")
-    
-
-
-    elif n_evento==11:#!ALBATRO
+        li_eventi.remove(n_evento)
+ 
+ 
+    elif n_evento==11 or n_evento==90 or n_evento==91:#!ALBATRO
         print(f"---EVENTO: AVVISTAMENTO ALBATRO--- \n in cielo viene avvistato un albatro, in caso di abbattimento vi sarà un aumento della scorta di CARNE ")
         colpito,merci,decisone_sparo,qta_guad,armi_utilizzate=avvistamento_albatro(equipaggio,merci,si_no,conta_vivi,Min_sparo_difesa,equipaggiamento)
+        li_eventi.remove(n_evento)
         if decisone_sparo==True:
             if colpito==True:
                 print(f"l'albatro è stato abbattuto, sono state state utilizzate {armi_utilizzate} ARMI, e l'equipaggio ha raccolto {qta_guad} di CARNE")
             else:print(f"l'albatro non è stato colpito, sono state usate/a {armi_utilizzate} ARMI")
         else:print("L'equipaggio non ha voluto sparare all'albatro, il viaggio prosegue")
-
-
+ 
+ 
     elif n_evento==12: #!SCIALUPPA
         print(f"---EVENTO: AVVISTAMENTO SCIALUPPA---\n  viene avvistata una scialuppa con 4 uomini")
+        li_eventi.remove(n_evento)
         deciosione_scialuppa,merci_precedente=avvistamento_scialuppa(si_no,merci,RUOLI,equipaggio)
         if deciosione_scialuppa==True:
             uomini_id=list(equipaggio.keys())
             naufraghi_id=uomini_id[-4:]
             print(naufraghi_id)
-
+ 
             print(f"gli uomini sono stati salvati, e hanno le seguenti caratteristiche:")
             for id in naufraghi_id:
-                
+               
                 print(f"{equipaggio[id]["ruolo"].upper()} con morale: {equipaggio[id]["morale"]}")
             print("dai naufraghi sono stati recuperati (quantità/kg):")
             for m in merci:
                 qta_recuperata=merci[m]-merci_precedente[m]
                 print(qta_recuperata,m )
-
-
+ 
+ 
     elif n_evento==13: #!EPIDEMIA
+        li_eventi.remove(n_evento)
         print(f"---EVENTO: EPIDEMIA---\n  L'epidemia si abbatte sull'equipaggio")
         n_malati,n_morti,n_guariti,medicinali_usati=epidemia(equipaggio,merci,ce_ruolo)
         print(f"l'epidemia ha portato {n_malati} MALATI, di cui {n_morti} sono MORTI")
         if n_guariti>=1:
             print(f"grazie alla presenza del medico, sono stati curati {n_guariti} membri, ma sono state usate {medicinali_usati} bottiglie di MEDICINALE")
-
+ 
     elif n_evento==14:
+        li_eventi.remove(n_evento)
         n_morti_xpir,num_pirati,n_armi_usate=attacco_pirata(equipaggio, conta_vivi,merci,Min_sparo_difesa)
         print(f"---EVENTO: ATTACCO PIRATA---\n  una nave composta da {num_pirati} pirati, sferra un attacco \n sono morti {n_morti_xpir} membri dell tuo equipaggio, e sono state usate {n_armi_usate} ARMI"  )
-
+ 
     elif n_evento==15:
+        li_eventi.remove(n_evento)
         giorni_in_piu,settimane,presenza_salvatore=raffiche_di_vento(equipaggio,settimane,"meccanico")
         if presenza_salvatore==True:
             print(f"---EVENTO: DANNI AL TIMONE--- \n l'urto con lo scoglio ha causato la rottura del timone il viaggio si allunga di {giorni_in_piu} settimana  \n GRAZIE AL MECCANICO il danno è stato riparato in fretta")
         else:
             print(f"---EVENTO: DANNI AL TIMONE--- \n l'urto con lo scoglio ha causato la rottura del timone il viaggio si allunga di {giorni_in_piu} settimane \n per via dell'ASSENZA DEL MECCANICO il timone viene riparato mooolto lentamente")
-
+ 
     elif n_evento==16:
+        li_eventi.remove(n_evento)
         giorni_in_piu,settimane,presenza_salvatore=raffiche_di_vento(equipaggio,settimane,"navigatore")
         if presenza_salvatore==True:
             print(f"---EVENTO: RAFFICHE DI VENTO--- \n a causa di FORTI RAFFICHE DI VENTO la nave si allontana dalla rotta iniziale, il viaggio si allunga di {giorni_in_piu} settimana  \n GRAZIE AL NAVIGATORE la situazione è stata risolta velocemente")
         else:
             print(f"---EVENTO: RAFFICHE DI VENTO--- \n a causa di FORTI RAFFICHE DI VENTO la nave si allontana dalla rotta iniziale, il viaggio si allunga di {giorni_in_piu} settimane  \n per via dell' ASSENZA DEL NAVIGATORE la situazione è stata risolta mooolto lentamente")
-
-
+ 
+ 
     elif n_evento==17:
+        li_eventi.remove(n_evento)
         dec_ab_isola,merce_precedente,sett_in_piu=avvistamento_isola(si_no,colpito,merci)
-        
+       
         if dec_ab_isola=="non raggiunta":
             print("l'equipaggio a preferito non raggiungere l'isola, il viaggio prosegue")
         elif dec_ab_isola=="non abitata":
             settimane += sett_in_piu
             print(f"l'isola non è abitata, l'equipaggio prosegue il viaggio, esso si allunga di {sett_in_piu} SETTIMANE")
-
+ 
         elif dec_ab_isola=="ostile":
             settimane += sett_in_piu
             print(f"l'isola è ostile, l'equipaggio scappa dall'isola, il viaggio si allunga di {sett_in_piu} SETTIMANE ")
@@ -800,13 +838,15 @@ while settimane!=conta_set:
             for m in merci:
                 qta_recuperata=merci[m]-merce_precedente[m]
                 print(qta_recuperata,m )
-
+ 
     elif n_evento==18:
+        li_eventi.remove(n_evento)
         print("NON SUCCEDE NULLA DI SPECIALE DURANTE LA SETTIMANA")
     conta_set+=1
     p=input("premi qualsiasi tasto per andare avanti")
+   
     #*"""
-
+ 
     #TODO   RICORDA DI METTER APPROSSIMAZIONE DEI VALORI Kg PERSI perchè fa tipo 9.000000000001   se capita
     #TODO SE COLPITO ALBATRO=AMMUTINAMENTO EGLIO METTERLO IN PROG PRINCIPALE O FARE FUNZIONE PER ESSO
  
