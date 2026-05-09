@@ -275,13 +275,13 @@ merci_baratto = {
 def baratto_sale(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
     print("\n--- BARATTO: SALE ---")
     print("Offrirai tutti i tuoi sacchi di sale. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["sale"]/merci_baratto["perla"]["sale"]
-    manufatti = stato_gioco["merci"]["sale"]/merci_baratto["manufatti"]["sale"]
-    spezie = stato_gioco["merci"]["sale"]/merci_baratto["spezie"]["sale"]
+    perle = stato_gioco["merci"]["sale"]//merci_baratto["perla"]["sale"]
+    manufatti = stato_gioco["merci"]["sale"]//merci_baratto["manufatti"]["sale"]
+    spezie = stato_gioco["merci"]["sale"]//merci_baratto["spezie"]["sale"]
 
-    print(f"  1) {perle:.0f} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-    print(f"  2) {manufatti:.0f} manufatti   (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
-    print(f"  3) {spezie:.0f} spezie       (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
+    print(f"  2) {manufatti} manufatti   (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
+    print(f"  3) {spezie} spezie       (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
     
     corretto = False
     while not corretto:
@@ -293,31 +293,31 @@ def baratto_sale(merci_baratto, stato_gioco): #TODO aggiungere condizione nel me
         elif scelta == "1":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["perle"] += perle
-            print(f"  Hai ottenuto {perle:.0f} perle!")
+            print(f"  Hai ottenuto {perle} perle!")
             corretto = True
 
         elif scelta == "2":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
-            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
         
         elif scelta == "3":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["spezie"] += spezie
-            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
 def baratto_stoffa(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
     print("\n--- BARATTO: STOFFA ---")
     print("Offrirai tutti i tuoi teli di stoffa. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["stoffa"]/merci_baratto["perla"]["stoffa"]
-    manufatti = stato_gioco["merci"]["stoffa"]/merci_baratto["manufatti"]["stoffa"]
-    spezie = stato_gioco["merci"]["stoffa"]/merci_baratto["spezie"]["stoffa"]
+    perle = stato_gioco["merci"]["stoffa"]//merci_baratto["perla"]["stoffa"]
+    manufatti = stato_gioco["merci"]["stoffa"]//merci_baratto["manufatti"]["stoffa"]
+    spezie = stato_gioco["merci"]["stoffa"]//merci_baratto["spezie"]["stoffa"]
 
-    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
-    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
+    print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
+    print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
     
     corretto = False
     while not corretto:
@@ -329,31 +329,31 @@ def baratto_stoffa(merci_baratto, stato_gioco): #TODO aggiungere condizione nel 
         elif scelta == "1":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["perle"] += perle
-            print(f"  Hai ottenuto {perle:.0f} perle!")
+            print(f"  Hai ottenuto {perle} perle!")
             corretto = True
 
         elif scelta == "2":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
-            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
         
         elif scelta == "3":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["spezie"] += spezie
-            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
 def baratto_coltelli(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
     print("\n--- BARATTO: COLTELLI ---")
     print("Offrirai tutti i tuoi coltelli. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["coltelli"]/merci_baratto["perla"]["coltello"]
-    manufatti = stato_gioco["merci"]["coltelli"]/merci_baratto["manufatti"]["coltello"]
-    spezie = stato_gioco["merci"]["coltelli"]/merci_baratto["spezie"]["coltello"]
+    perle = stato_gioco["merci"]["coltelli"]//merci_baratto["perla"]["coltello"]
+    manufatti = stato_gioco["merci"]["coltelli"]//merci_baratto["manufatti"]["coltello"]
+    spezie = stato_gioco["merci"]["coltelli"]//merci_baratto["spezie"]["coltello"]
 
-    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
-    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
+    print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
+    print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
     
     corretto = False
     while not corretto:
@@ -365,31 +365,31 @@ def baratto_coltelli(merci_baratto, stato_gioco): #TODO aggiungere condizione ne
         elif scelta == "1":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["perle"] += perle
-            print(f"  Hai ottenuto {perle:.0f} perle!")
+            print(f"  Hai ottenuto {perle} perle!")
             corretto = True
 
         elif scelta == "2":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
-            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
         
         elif scelta == "3":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["spezie"] += spezie
-            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
 def baratto_diamanti(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
     print("\n--- BARATTO: DIAMANTI ---")
     print("Offrirai tutti i tuoi diamanti. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["diamanti"]/merci_baratto["perla"]["diamanti"]
-    manufatti = stato_gioco["merci"]["diamanti"]/merci_baratto["manufatti"]["diamanti"]
-    spezie = stato_gioco["merci"]["diamanti"]/merci_baratto["spezie"]["diamanti"]
+    perle = stato_gioco["merci"]["diamanti"]//merci_baratto["perla"]["diamanti"]
+    manufatti = stato_gioco["merci"]["diamanti"]//merci_baratto["manufatti"]["diamanti"]
+    spezie = stato_gioco["merci"]["diamanti"]//merci_baratto["spezie"]["diamanti"]
 
-    print(f"  1) {perle:.0f} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']:.0f} dobloni)")
-    print(f"  2) {manufatti:.0f} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni)")
-    print(f"  3) {spezie:.0f} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']:.0f} dobloni)")
+    print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
+    print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
+    print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
     
     corretto = False
     while not corretto:
@@ -401,32 +401,31 @@ def baratto_diamanti(merci_baratto, stato_gioco): #TODO aggiungere condizione ne
         elif scelta == "1":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["perle"] += perle
-            print(f"  Hai ottenuto {perle:.0f} perle!")
+            print(f"  Hai ottenuto {perle} perle!")
             corretto = True
 
         elif scelta == "2":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
-            print(f"  Hai ottenuto {manufatti:.0f} manufatti!")
+            print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
         
         elif scelta == "3":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["spezie"] += spezie
-            print(f"  Hai ottenuto {spezie:.0f} barattoli di spezie!")
+            print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
             
 def Resoconto_baratto(merci_baratto, stato_gioco):
     print("\n" + "=" * 50)
     print("BARATTO CONCLUSO!")
     print("Ecco il resoconto, hai ottenuto:")
-    print(f"  Perle:            {stato_gioco["merci"]['perle']:.0f} - totale stimato: {stato_gioco["merci"]['perle'] * merci_baratto['perla']['prezzo stimato']:.0f} dobloni")
-    print(f"  Manufatti:        {stato_gioco["merci"]['manufatti']:.0f} - totale stimato: {stato_gioco["merci"]['manufatti'] * merci_baratto['manufatti']['prezzo stimato']:.0f} dobloni")
-    print(f"  Barattoli spezie: {stato_gioco["merci"]['spezie']:.0f} - totale stimato: {stato_gioco["merci"]['spezie'] * merci_baratto['spezie']['prezzo stimato']:.0f} dobloni")
+    print(f"  Perle:            {stato_gioco["merci"]['perle']} - totale stimato: {stato_gioco["merci"]['perle'] * merci_baratto['perla']['prezzo stimato']} dobloni")
+    print(f"  Manufatti:        {stato_gioco["merci"]['manufatti']} - totale stimato: {stato_gioco["merci"]['manufatti'] * merci_baratto['manufatti']['prezzo stimato']} dobloni")
+    print(f"  Barattoli spezie: {stato_gioco["merci"]['spezie']} - totale stimato: {stato_gioco["merci"]['spezie'] * merci_baratto['spezie']['prezzo stimato']} dobloni")
     print("=" * 50)
 
-def tradimento(merci_baratto, stato_gioco, albatro): #TODO ricontrollo e se possibile semplificazione della funzione
-    import random
+def Intro_tradimento(merci_baratto, stato_gioco): #TODO ricontrollo e se possibile semplificazione della funzione
     # Questa funzione va chiamata solo se il giocatore ha armi residue
 
     ricavo_ipo = stato_gioco["merci"]["armi"] * 30 * merci_baratto["perla"]["prezzo stimato"]
@@ -440,8 +439,19 @@ def tradimento(merci_baratto, stato_gioco, albatro): #TODO ricontrollo e se poss
         print("Scelta non valida, riprovare.")
         scelta = input("Accetti la proposta del rivale del capotribù? (s/n): ").strip().lower()
 
-    if scelta == "n":
-        return
+    return scelta
+
+def Ricompensa(albatro): #TODO chiamare questa funzione solo se il giocatore non accetta di dare le armi al rivale
+    import random
+    if albatro == True:
+        offerta=random.randint(5,20)
+    else:
+        offerta=random.randint(30,50)
+    
+    return offerta
+
+def Tradimento(stato_gioco,albatro):
+    import random
 
     stato_gioco["merci"]["perle"] += stato_gioco["merci"]["armi"] * 30
     stato_gioco["merci"]["armi"] = 0
@@ -453,12 +463,7 @@ def tradimento(merci_baratto, stato_gioco, albatro): #TODO ricontrollo e se poss
     elif albatro is None:
         scoperto = random.randint(1, 2) == 1
 
-    if scoperto:
-        print("\nIl capotribù ha scoperto che hai appoggiato il suo rivale.")
-        print("Si presenta al vostro accampamento e stermina il tuo intero equipaggio.")
-        print("GAME OVER")
-
-
+    return scoperto
 
 def calcolo_settimane_e_rifornimento(stato_gioco,CATALOGO_CIBO,albatro):
     membri_vivi =  stato_gioco["equipaggio"]["cuoco"] + stato_gioco["equipaggio"]["marinaio"] + stato_gioco["equipaggio"]["meccanico"] + stato_gioco["equipaggio"]["medico"] + stato_gioco["equipaggio"]["navigatore"]
@@ -522,7 +527,7 @@ def Scelta():
 
 def Asta(stato_gioco):
     import random
-    valori_temp=[500,550,600,650,700,750,800,850,1200,500,550,600,650,700,750,800,850,1200]
+    valori_temp=[350,500,550,600,650,700,750,800,850,1200,350,500,550,600,650,700,750,800,850,1200]
     valori=[50,300,400,450]
     
     print("Questa è l'asta, ti verranno fatte delle offerte per la tua nave, che potrai accettare o rifiutare")
@@ -531,8 +536,11 @@ def Asta(stato_gioco):
     while risposta != "s":
         lista=random.randint(1,2)
 
+        if not valori_temp:
+            lista=2
+
         if lista == 1:
-            valore=random.randint(1,len(valori_temp))
+            valore=random.randint(0,len(valori_temp)-1)
             offerta=valori_temp[valore]
             print(f"un offerente ti propone {offerta} dobloni")
             risposta=input("accetti? (s/n) ").strip().lower()
@@ -542,7 +550,7 @@ def Asta(stato_gioco):
             valori_temp.pop(valore)
 
         else:
-            valore=random.randint(1,len(valori))
+            valore=random.randint(0,len(valori)-1)
             offerta=valori[valore]
             print(f"un offerente ti propone {offerta}")
             risposta=input("accetti? (s/n) ").strip().lower()
