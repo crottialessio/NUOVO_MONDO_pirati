@@ -1028,12 +1028,14 @@ print("--- BENVENUTO IN NUOVO MONDO ---")
 
 scelta = input("Vuoi caricare la partita precedente? (s/n): ").lower().strip()
 if scelta == "s":
-    dati_caricati = Carica()
-    if dati_caricati:
+    try:
+        dati_caricati = Carica()
         stato_gioco = dati_caricati
         print("Partita caricata con successo!")
-    else:
+    except:
         print("Nessun salvataggio trovato. Inizio nuova partita.")
+
+           
 
 # parte cars------------------------------------------------------------------------------------------------------------------------------------------------------
 
