@@ -385,9 +385,6 @@
 
 
 
-
-
-
 import random
 
 RUOLI={"cuoco":{"paga_settimanale":15},"marinaio":{"paga_settimanale":10},"meccanico":{"paga_settimanale":15},"medico":{"paga_settimanale":25},"navigatore":{"paga_settimanale":20}}
