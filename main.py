@@ -107,11 +107,11 @@ def aggiungi_membro(ruolo):
     stato_gioco["prossimo_id"] += 1
 
 def conteggio_ruoli():
-    # Sostituisce Counter: conta manualmente con un dizionario
     conteggio = {r: 0 for r in RUOLI}
     for membro in stato_gioco["equipaggio"].values():
         conteggio[membro["ruolo"]] += 1
     return conteggio
+
 def totale_equipaggio():
     return len(stato_gioco["equipaggio"])
 
@@ -242,7 +242,6 @@ def fase_ingaggio():
         print(f"    {ruolo.capitalize():<12} {dati['paga_settimanale']} monete/sett.")
     print()
     turno_ingaggio()
-
 
 
 def stampa_stato_cibo():
@@ -384,273 +383,269 @@ def riepilogo_pre_partenza():
     input("  Premi INVIO per salpare...")
 
 
-colpito=None
-qta_da_perdere=[0.5,0.33,0.25,0.2]
-###########################################################################################à
-#! FUNZIONI DI GIOCO BASE
+qta_da_perdere = [0.5, 0.33, 0.25, 0.2]
+
+
 def si_no(domanda_dec):
-    corretto=False
-    while corretto!=True:
-        decisione_ut=input(f"{domanda_dec}(si/no)").lower().strip()
-        if decisione_ut=="si":return True
-        elif decisione_ut=="no":return False
+    corretto = False
+    while not corretto:
+        decisione_ut = input(f"{domanda_dec} (si/no): ").lower().strip()
+        if decisione_ut == "si":
+            return True
+        elif decisione_ut == "no":
+            return False
         else:
-            print("l'input non è stato inserito correttamente è si o no")
+            print("L'input non è stato inserito correttamente, è si o no.")
 
 def conta_vivi(equipaggio_in):
-    conta=0
+    conta = 0
     for i in equipaggio_in:
-        if equipaggio_in[i]["vivo"]==True:
-            conta+=1
+        if equipaggio_in[i]["vivo"] == True:
+            conta += 1
     return conta
 
-def Min_sparo_difesa(equipaggio_in,merci_in,funz_n_vivi):
-    n_armi=merci_in["armi"]
-    qta_vivi=funz_n_vivi(equipaggio_in)
-    tentativi=min(qta_vivi,n_armi)
+def Min_sparo_difesa(equipaggio_in, merci_in, funz_n_vivi):
+    n_armi = merci_in["armi"]
+    qta_vivi = funz_n_vivi(equipaggio_in)
+    tentativi = min(qta_vivi, n_armi)
     return tentativi
 
-def ce_ruolo(equipaggio_in,ruolo_ind):
+def ce_ruolo(equipaggio_in, ruolo_ind):
     for membro in equipaggio_in.values():
-        if membro["ruolo"]==ruolo_ind and membro["vivo"]==True:
+        if membro["ruolo"] == ruolo_ind and membro["vivo"] == True:
             return True
     return False
-####################################################################################
-def prova_unica(equipaggiamento_in,oggetto,qta_perdere_0):
-    qta_persa=random.choice(qta_perdere_0)
-    peso_perso=equipaggiamento_in[oggetto]*qta_persa
-    equipaggiamento_in[oggetto]-=peso_perso
-    return equipaggiamento_in,peso_perso
 
-def tempesta_miracolosa(equipaggiamento_in,oggetto):
-    qta_guadagnata=random.randint(11,20)
-    equipaggiamento_in[oggetto]+=qta_guadagnata
-    return equipaggiamento_in,qta_guadagnata
+def prova_unica(equipaggiamento_in, oggetto, qta_perdere_0):
+    qta_persa = random.choice(qta_perdere_0)
+    peso_perso = equipaggiamento_in[oggetto] * qta_persa
+    equipaggiamento_in[oggetto] -= peso_perso
+    return equipaggiamento_in, peso_perso
 
-def raffiche_di_vento(equipaggio_in,settimane_int,ruolo_ind):
-    presenza_ruolo=False
+def tempesta_miracolosa(equipaggiamento_in, oggetto):
+    qta_guadagnata = random.randint(11, 20)
+    equipaggiamento_in[oggetto] += qta_guadagnata
+    return equipaggiamento_in, qta_guadagnata
+
+def raffiche_di_vento(equipaggio_in, settimane_int, ruolo_ind):
+    presenza_ruolo = False
     for membro in equipaggio_in.values():
-        if membro["ruolo"]==ruolo_ind and membro["vivo"]==True:
-            presenza_ruolo=True
-    if presenza_ruolo==True:
-        settimane_int+=1
-        return 1,settimane_int,presenza_ruolo
+        if membro["ruolo"] == ruolo_ind and membro["vivo"] == True:
+            presenza_ruolo = True
+    if presenza_ruolo:
+        settimane_int += 1
+        return 1, settimane_int, presenza_ruolo
     else:
-        sett_casuale=random.randint(2,4)
-        settimane_int+=sett_casuale
-        return sett_casuale,settimane_int,presenza_ruolo
+        sett_casuale = random.randint(2, 4)
+        settimane_int += sett_casuale
+        return sett_casuale, settimane_int, presenza_ruolo
 
-def uomo_in_mare(equipaggio_in,delta_mor):
-    eq_vivi=[]
+def uomo_in_mare(equipaggio_in, delta_mor):
+    eq_vivi = []
     for i in equipaggio_in:
-        if equipaggio_in[i]["vivo"]==True:
+        if equipaggio_in[i]["vivo"] == True:
             eq_vivi.append(i)
-    morto=random.choice(eq_vivi)
-    equipaggio_in[morto]["vivo"]=False
-    delta_mor=aggiorna_DELTA_morlae(delta_mor,-10)
-    return equipaggio_in[morto]['ruolo'],delta_mor
+    morto = random.choice(eq_vivi)
+    equipaggio_in[morto]["vivo"] = False
+    delta_mor = aggiorna_DELTA_morlae(delta_mor, -10)
+    return equipaggio_in[morto]['ruolo'], delta_mor
 
-def vento_favorevole(settimane_in,equipaggio_in,delta_mor):
-    morale_piu=random.randint(5,15)
-    
-    settimane_in-=1
-    delta_mor=aggiorna_DELTA_morlae(delta_mor,morale_piu)
-    return equipaggio_in,settimane_in,delta_mor,morale_piu
+def vento_favorevole(settimane_in, equipaggio_in, delta_mor):
+    morale_piu = random.randint(5, 15)
+    settimane_in -= 1
+    delta_mor = aggiorna_DELTA_morlae(delta_mor, morale_piu)
+    return equipaggio_in, settimane_in, delta_mor, morale_piu
 
-def avvistamento_albatro(equipaggio_in,merci_in,funz_decisione,funz_n_vivi,min_sparo,cibo_in):
-    n_armi=merci_in["armi"]
-    decisione_abbatimento=None
-    colpito=False
-    conta_armi=0
-    if n_armi>=1:
-        domanda="gli si vuole sparare?"
-        decisione_abbatimento=funz_decisione(domanda)
-        if decisione_abbatimento==True:
-            tentativi_sparare=min_sparo(equipaggio_in,merci_in,funz_n_vivi)
-            for i in range(int(tentativi_sparare)):#mettere int prchè sennò bug FOR MAI FLOAT
-                colpito=random.randint(0,1)
-                merci_in["armi"]-=1
-                conta_armi+=1
-                if colpito==1:
-                    qta_cas_carne=random.randint(10,15)
-                    cibo_in["carne"]+=qta_cas_carne
-                    return True,merci_in,decisione_abbatimento,qta_cas_carne,conta_armi
-            return colpito,merci_in,decisione_abbatimento,None,conta_armi
+def avvistamento_albatro(equipaggio_in, merci_in, funz_decisione, funz_n_vivi, min_sparo, cibo_in):
+    n_armi = merci_in["armi"]
+    decisione_abbatimento = None
+    colpito = False
+    conta_armi = 0
+    if n_armi >= 1:
+        domanda = "Gli si vuole sparare?"
+        decisione_abbatimento = funz_decisione(domanda)
+        if decisione_abbatimento:
+            tentativi_sparare = min_sparo(equipaggio_in, merci_in, funz_n_vivi)
+            for i in range(int(tentativi_sparare)):
+                colpito = random.randint(0, 1)
+                merci_in["armi"] -= 1
+                conta_armi += 1
+                if colpito == 1:
+                    qta_cas_carne = random.randint(10, 15)
+                    cibo_in["carne"] += qta_cas_carne
+                    return True, merci_in, decisione_abbatimento, qta_cas_carne, conta_armi
+            return colpito, merci_in, decisione_abbatimento, None, conta_armi
         else:
-            return False,merci_in,decisione_abbatimento,None,None
-    return colpito,merci_in,decisione_abbatimento,None,None
+            return False, merci_in, decisione_abbatimento, None, None
+    return colpito, merci_in, decisione_abbatimento, None, None
 
-def avvistamento_scialuppa(funz_decisione,merci_in,ruoli_base,equipaggio_in):
-    domanda="vuoi salvarli?"
-    decisione=funz_decisione(domanda)
-    if decisione==False:
-        return decisione,None
+def avvistamento_scialuppa(funz_decisione, merci_in, ruoli_base, equipaggio_in):
+    domanda = "Vuoi salvarli?"
+    decisione = funz_decisione(domanda)
+    if not decisione:
+        return decisione, None
     else:
-        merce_iniziale=merci_in.copy()
+        merce_iniziale = merci_in.copy()
+        ids_esistenti = list(equipaggio_in.keys())
+        nuovo_id = max(ids_esistenti) + 1 if ids_esistenti else 1
         for i in range(4):
-            nuovo_id=max(equipaggio_in.keys())+1
-            morale_cas=random.randint(25,75)
-            ruoli=list(ruoli_base.keys())
-            ruolo_cas=random.choice(ruoli)
-            naufrago_creato={"ruolo":ruolo_cas,"paga_settimanale":ruoli_base[ruolo_cas]["paga_settimanale"],"morale":morale_cas,"vivo":True,"ingaggiato":False}
-            equipaggio_in[nuovo_id]=naufrago_creato
+            morale_cas = random.randint(25, 75)
+            ruoli = list(ruoli_base.keys())
+            ruolo_cas = random.choice(ruoli)
+            naufrago_creato = {
+                "ruolo": ruolo_cas,
+                "paga_settimanale": ruoli_base[ruolo_cas]["paga_settimanale"],
+                "morale": morale_cas,
+                "vivo": True,
+                "ingaggiato": False
+            }
+            equipaggio_in[nuovo_id] = naufrago_creato
+            nuovo_id += 1
         for i in merci_in:
-            merci_cas=random.randint(10,20)
-            merci_in[i]+=merci_cas
-        return decisione,merce_iniziale
+            merci_cas = random.randint(10, 20)
+            merci_in[i] += merci_cas
+        return decisione, merce_iniziale
 
-def epidemia(equipaggio_in,merci_in,ce_medico,delta_mor):
-    conta_malati=0
-    conta_morti=0
-    conta_guariti=0
-    medicinali_persi=0
-    presenza_med=ce_medico(equipaggio_in,"medico")
+def epidemia(equipaggio_in, merci_in, ce_medico, delta_mor):
+    conta_malati = 0
+    conta_morti = 0
+    conta_guariti = 0
+    medicinali_persi = 0
+    presenza_med = ce_medico(equipaggio_in, "medico")
     for i in equipaggio_in:
-        if equipaggio_in[i]["vivo"]==True and equipaggio_in[i]["ruolo"]!="medico":
-            ott_malattia=random.randint(1,100)
-            if ott_malattia<=70:
-                conta_malati+=1
-                if presenza_med==True and merci_in["medicinali"]>=1:
-                    equipaggio_in[i]["vivo"]=True
-                    merci_in["medicinali"]-=1
-                    medicinali_persi+=1
-                    conta_guariti+=1
+        if equipaggio_in[i]["vivo"] == True and equipaggio_in[i]["ruolo"] != "medico":
+            ott_malattia = random.randint(1, 100)
+            if ott_malattia <= 70:
+                conta_malati += 1
+                if presenza_med and merci_in["medicinali"] >= 1:
+                    equipaggio_in[i]["vivo"] = True
+                    merci_in["medicinali"] -= 1
+                    medicinali_persi += 1
+                    conta_guariti += 1
                 else:
-                    equipaggio_in[i]["vivo"]=False
-                    conta_morti+=1
-    if conta_malati>=1:
-        delta_mor=aggiorna_DELTA_morlae(delta_mor,-5)
-    return conta_malati,conta_morti,conta_guariti,medicinali_persi,delta_mor
+                    equipaggio_in[i]["vivo"] = False
+                    conta_morti += 1
+    if conta_malati >= 1:
+        delta_mor = aggiorna_DELTA_morlae(delta_mor, -5)
+    return conta_malati, conta_morti, conta_guariti, medicinali_persi, delta_mor
 
-def attacco_pirata(equipaggio_in,funz_conta_vivi,merci_in,funz_min_sparo,delta_mor):
-    n_pirati=random.randint(3,10)
-    n_vivi=funz_conta_vivi(equipaggio_in)
-    n_difensori=funz_min_sparo(equipaggio_in,merci_in,funz_conta_vivi)
-    merci_in["armi"]-=n_difensori
-    uomini_persi=min(n_pirati-n_difensori,n_vivi)
-    if uomini_persi>=1:
-        delta_mor=aggiorna_DELTA_morlae(delta_mor,-5)
-        eq_vivi=[]
+def attacco_pirata(equipaggio_in, funz_conta_vivi, merci_in, funz_min_sparo, delta_mor):
+    n_pirati = random.randint(3, 10)
+    n_vivi = funz_conta_vivi(equipaggio_in)
+    n_difensori = funz_min_sparo(equipaggio_in, merci_in, funz_conta_vivi)
+    merci_in["armi"] -= n_difensori
+    uomini_persi = min(max(n_pirati - n_difensori, 0), n_vivi)
+    if uomini_persi >= 1:
+        delta_mor = aggiorna_DELTA_morlae(delta_mor, -5)
+        eq_vivi = []
         for i in equipaggio_in:
-            if equipaggio_in[i]["vivo"]==True:
+            if equipaggio_in[i]["vivo"] == True:
                 eq_vivi.append(i)
         for j in range(uomini_persi):
-            morto=random.choice(eq_vivi)
-            equipaggio_in[morto]["vivo"]=False
+            morto = random.choice(eq_vivi)
+            equipaggio_in[morto]["vivo"] = False
             eq_vivi.remove(morto)
-    return uomini_persi,n_pirati,n_difensori,delta_mor
+    return uomini_persi, n_pirati, n_difensori, delta_mor
 
-def avvistamento_isola(funz_dec,albatro_morto,merci_in):
-    domanda="viene avvistata un isola, ci si vuole andare??"
-    risposta=funz_dec(domanda)
-    if risposta==False:
-        return "non raggiunta",None,None
+def avvistamento_isola(funz_dec, albatro_morto, merci_in):
+    domanda = "Viene avvistata un'isola, ci si vuole andare?"
+    risposta = funz_dec(domanda)
+    if not risposta:
+        return "non raggiunta", None, None
     else:
-        sett_aggiuntive=random.randint(1,2)
-        prob_abit=random.randint(0,1)
-        if prob_abit==0:
-            return "non abitata",None,sett_aggiuntive
+        sett_aggiuntive = random.randint(1, 2)
+        prob_abit = random.randint(0, 1)
+        if prob_abit == 0:
+            return "non abitata", None, sett_aggiuntive
         else:
-            ostilità=random.randint(0,1)
-            if ostilità==1:
-                return "ostile",None,sett_aggiuntive
+            ostilità = random.randint(0, 1)
+            if ostilità == 1:
+                return "ostile", None, sett_aggiuntive
             else:
-                merci_prec=merci_in.copy()
+                merci_prec = merci_in.copy()
                 for i in merci_in:
-                    if albatro_morto==False:
-                        qta_cas=random.randint(20,40)
+                    if not albatro_morto:
+                        qta_cas = random.randint(20, 40)
                     else:
-                        qta_cas=random.randint(5,20)
-                    merci_in[i]+=qta_cas
-                return "abitata",merci_prec,sett_aggiuntive
+                        qta_cas = random.randint(5, 20)
+                    merci_in[i] += qta_cas
+                return "abitata", merci_prec, sett_aggiuntive
 
-def calcola_riepilogo_sc_mc(ogg,iter):
-    qta=ogg[iter]
-    return iter,qta
+def calcola_riepilogo_sc_mc(ogg, iter):
+    qta = ogg[iter]
+    return iter, qta
 
-def calcola_riepilogo(merci_in,cibo_in,equipaggio_in):
+def calcola_riepilogo(merci_in, cibo_in, equipaggio_in):
     print("---->FINE SETTIMANA<----")
     print("RIEPILOGO DELLA SETTIMANA")
     print(f"\nRIEPILOGO MERCI")
     for m in merci_in:
-        merce,quantità=calcola_riepilogo_sc_mc(merci_in,m)
-        print(f"{merce}:{quantità}")
+        merce, quantità = calcola_riepilogo_sc_mc(merci_in, m)
+        print(f"  {merce}: {quantità}")
     print(f"\nRIEPILOGO SCORTE")
     for s in cibo_in:
-        merce_sc,quantità_sc=calcola_riepilogo_sc_mc(cibo_in,s)
-        if s=="acqua":
-            print(f"{merce_sc}:{quantità_sc} barili")
+        merce_sc, quantità_sc = calcola_riepilogo_sc_mc(cibo_in, s)
+        if s == "acqua":
+            print(f"  {merce_sc}: {quantità_sc:.1f} barili")
         else:
-            print(f"{merce_sc}:{quantità_sc}")
+            print(f"  {merce_sc}: {quantità_sc:.1f} kg")
     print(f"\nRIEPILOGO EQUIPAGGIO")
     for i in equipaggio_in:
-        if equipaggio_in[i]["vivo"]==True:
-            print(f"{i} {equipaggio_in[i]["ruolo"]} morale:{equipaggio_in[i]["morale"]}")
+        if equipaggio_in[i]["vivo"] == True:
+            print(f"  [{i}] {equipaggio_in[i]['ruolo']}  morale: {equipaggio_in[i]['morale']}")
 
-def ammutinamento(dimezzato,funz_ce_ruolo,equipaggio_in,albatro_colpito,funz_n_vivi,differenza_Setttimane):
-    pt_ammunitamento=0
-    num_vivi=funz_n_vivi(equipaggio_in)
-    presenza_ruolo=funz_ce_ruolo(equipaggio_in,"cuoco")
-    if dimezzato==True:
-        pt_ammunitamento+=30
-    if num_vivi>=12:
-        pt_ammunitamento+=30
-    if albatro_colpito==True:
-        pt_ammunitamento+=30
-    if albatro_colpito==False:
-        pt_ammunitamento-=20
-    if presenza_ruolo==False:
-        pt_ammunitamento+=30
-    pt_ammunitamento+=differenza_Setttimane*10
-    return pt_ammunitamento
+def ammutinamento(dimezzato, funz_ce_ruolo, equipaggio_in, albatro_colpito, funz_n_vivi, differenza_Setttimane):
+    pt_ammutinamento = 0
+    num_vivi = funz_n_vivi(equipaggio_in)
+    presenza_ruolo = funz_ce_ruolo(equipaggio_in, "cuoco")
+    if dimezzato:
+        pt_ammutinamento += 30
+    if num_vivi >= 12:
+        pt_ammutinamento += 30
+    if albatro_colpito == True:
+        pt_ammutinamento += 30
+    if albatro_colpito == False:
+        pt_ammutinamento -= 20
+    if not presenza_ruolo:
+        pt_ammutinamento += 30
+    pt_ammutinamento += differenza_Setttimane * 10
+    return pt_ammutinamento
 
 def printare_ammutinamento_cond(pt_ammutinamento):
-    if 1<=pt_ammutinamento<=99:
-        print("c'è un alto rischio di ammutinameto si coniglia di \n non sparare agli albatro e di affrettarsi con il viaggio")
-    elif pt_ammutinamento>=100:
-        print(f"HAI PERSO :( \n, il livello di ammutinamento ha raggiunto i 100 punti e gli uomini ti hanno abbandonato\n GAME OVER")
+    if 1 <= pt_ammutinamento <= 99:
+        print("⚠  C'è un alto rischio di ammutinamento! Si consiglia di non sparare agli albatri e di affrettarsi con il viaggio.")
+    elif pt_ammutinamento >= 100:
+        print("HAI PERSO :(\nIl livello di ammutinamento ha raggiunto i 100 punti e gli uomini ti hanno abbandonato.\nGAME OVER")
 
-
-def ricalcolo_settimane(sett,equipaggio_in,funz_n_vivi):
-    num_vivi=funz_n_vivi(equipaggio_in)
-    conta_min_mor=0
+def ricalcolo_settimane(sett, equipaggio_in, funz_n_vivi):
+    num_vivi = funz_n_vivi(equipaggio_in)
+    conta_min_mor = 0
     for i in equipaggio_in:
-        if equipaggio_in[i]["vivo"]==True and equipaggio_in[i]["morale"]<=30:
-            conta_min_mor+=1
-    if num_vivi//2<=conta_min_mor:
-        sett+=1
+        if equipaggio_in[i]["vivo"] == True and equipaggio_in[i]["morale"] <= 30:
+            conta_min_mor += 1
+    if num_vivi > 0 and num_vivi // 2 <= conta_min_mor:
+        sett += 1
     return sett
 
-def aggiorna_DELTA_morlae(delta_mor,qta):
-    delta_mor+=qta
+def aggiorna_DELTA_morlae(delta_mor, qta):
+    delta_mor += qta
     return delta_mor
 
-def aggiungi_mor_equip(equipaggio_in,delta_mor):
+def aggiungi_mor_equip(equipaggio_in, delta_mor):
     for m in equipaggio_in.values():
-        if m["vivo"]==True:
-            m["morale"]+=delta_mor
-            if m["morale"]<=0:
-
-                m["vivo"]=False
+        if m["vivo"] == True:
+            m["morale"] += delta_mor
+            if m["morale"] <= 0:
+                m["vivo"] = False
     return equipaggio_in
 
-SETTIMANE=8
-sett_vecchie=8
-settimane=8
-delta_morale=0
-li_eventi=[0,1,2,3,4,5,6,7,8,9,10,11,90,91,12,13,14,15,16,17,18]
-conta_set=1
-punti_ammutinamento=0
-game_over=False
-#>= perchè se faccio +2 verso la fine il gioco fa aanti tanto
-
-def Calcolo_cibo_1_sett(CATALOGO_CIBO,stato_gioco):
+def Calcolo_cibo_1_sett(CATALOGO_CIBO, stato_gioco):
     membri_vivi = conta_vivi(stato_gioco["equipaggio"])
     verdura = CATALOGO_CIBO["verdura"]["consumo"] * membri_vivi
-    frutta = CATALOGO_CIBO["frutta"]["consumo"] * membri_vivi
-    carne = CATALOGO_CIBO["carne"]["consumo"] * membri_vivi
-    acqua = CATALOGO_CIBO["acqua"]["consumo"] * membri_vivi
-    return [verdura,frutta,carne,acqua]
+    frutta  = CATALOGO_CIBO["frutta"]["consumo"]  * membri_vivi
+    carne   = CATALOGO_CIBO["carne"]["consumo"]   * membri_vivi
+    acqua   = CATALOGO_CIBO["acqua"]["consumo"]   * membri_vivi
+    return [verdura, frutta, carne, acqua]
 
 def Sottrai_consumo_settimana(stato_gioco, cibi, moltiplicatori_razioni):
     tipi = ["verdura", "frutta", "carne", "acqua"]
@@ -678,7 +673,6 @@ def Chiedi_modifica_razione(cibo, stato):
         scelta = input("Vuoi raddoppiare le razioni? (s/n): ").strip().lower()
     else:
         return "n"
-    
     while scelta not in ["s", "n"]:
         print("Scelta non valida.")
         scelta = input("(s/n): ").strip().lower()
@@ -696,576 +690,569 @@ def Aggiorna_moltiplicatore_e_morale(cibo, stato, scelta, moltiplicatori, delta_
     return delta_morale
 
 def Controllo_scorte(stato_gioco, CATALOGO_CIBO, settimane_restanti, moltiplicatori, delta_morale):
-    
     cibi = Calcolo_cibo_1_sett(CATALOGO_CIBO, stato_gioco)
     Sottrai_consumo_settimana(stato_gioco, cibi, moltiplicatori)
     tipi = ["verdura", "frutta", "carne", "acqua"]
-    
     for i, tipo in enumerate(tipi):
         fabbisogno = cibi[i] * moltiplicatori[tipo] * settimane_restanti
         stato = Stato_cibo(stato_gioco["cibo"][tipo], fabbisogno)
         scelta = Chiedi_modifica_razione(tipo, stato)
         delta_morale = Aggiorna_moltiplicatore_e_morale(tipo, stato, scelta, moltiplicatori, delta_morale)
-    
     return delta_morale
 
-def baratto_sale(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+def baratto_sale(merci_baratto, stato_gioco):
     print("\n--- BARATTO: SALE ---")
     print("Offrirai tutti i tuoi sacchi di sale. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["sale"]//merci_baratto["perla"]["sale"]
-    manufatti = stato_gioco["merci"]["sale"]//merci_baratto["manufatti"]["sale"]
-    spezie = stato_gioco["merci"]["sale"]//merci_baratto["spezie"]["sale"]
-
+    perle     = stato_gioco["merci"]["sale"] // merci_baratto["perla"]["sale"]
+    manufatti = stato_gioco["merci"]["sale"] // merci_baratto["manufatti"]["sale"]
+    spezie    = stato_gioco["merci"]["sale"] // merci_baratto["spezie"]["sale"]
     print(f"  1) {perle} perle        (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
     print(f"  2) {manufatti} manufatti   (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
     print(f"  3) {spezie} spezie       (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
-    
     corretto = False
     while not corretto:
         scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-        
         if scelta not in ["1", "2", "3"]:
             print("  Scelta non valida, riprova.")
-
         elif scelta == "1":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["perle"] += perle
             print(f"  Hai ottenuto {perle} perle!")
             corretto = True
-
         elif scelta == "2":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
             print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
-        
         elif scelta == "3":
             stato_gioco["merci"]["sale"] = 0
             stato_gioco["merci"]["spezie"] += spezie
             print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
-def baratto_stoffa(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+def baratto_stoffa(merci_baratto, stato_gioco):
     print("\n--- BARATTO: STOFFA ---")
     print("Offrirai tutti i tuoi teli di stoffa. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["stoffa"]//merci_baratto["perla"]["stoffa"]
-    manufatti = stato_gioco["merci"]["stoffa"]//merci_baratto["manufatti"]["stoffa"]
-    spezie = stato_gioco["merci"]["stoffa"]//merci_baratto["spezie"]["stoffa"]
-
+    perle     = stato_gioco["merci"]["stoffa"] // merci_baratto["perla"]["stoffa"]
+    manufatti = stato_gioco["merci"]["stoffa"] // merci_baratto["manufatti"]["stoffa"]
+    spezie    = stato_gioco["merci"]["stoffa"] // merci_baratto["spezie"]["stoffa"]
     print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
     print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
     print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
-    
     corretto = False
     while not corretto:
         scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-        
         if scelta not in ["1", "2", "3"]:
             print("  Scelta non valida, riprova.")
-
         elif scelta == "1":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["perle"] += perle
             print(f"  Hai ottenuto {perle} perle!")
             corretto = True
-
         elif scelta == "2":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
             print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
-        
         elif scelta == "3":
             stato_gioco["merci"]["stoffa"] = 0
             stato_gioco["merci"]["spezie"] += spezie
             print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
-def baratto_coltelli(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+def baratto_coltelli(merci_baratto, stato_gioco):
     print("\n--- BARATTO: COLTELLI ---")
     print("Offrirai tutti i tuoi coltelli. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["coltelli"]//merci_baratto["perla"]["coltello"]
-    manufatti = stato_gioco["merci"]["coltelli"]//merci_baratto["manufatti"]["coltello"]
-    spezie = stato_gioco["merci"]["coltelli"]//merci_baratto["spezie"]["coltello"]
-
+    perle     = stato_gioco["merci"]["coltelli"] // merci_baratto["perla"]["coltello"]
+    manufatti = stato_gioco["merci"]["coltelli"] // merci_baratto["manufatti"]["coltello"]
+    spezie    = stato_gioco["merci"]["coltelli"] // merci_baratto["spezie"]["coltello"]
     print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
     print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
     print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
-    
     corretto = False
     while not corretto:
         scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-        
         if scelta not in ["1", "2", "3"]:
             print("  Scelta non valida, riprova.")
-
         elif scelta == "1":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["perle"] += perle
             print(f"  Hai ottenuto {perle} perle!")
             corretto = True
-
         elif scelta == "2":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
             print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
-        
         elif scelta == "3":
             stato_gioco["merci"]["coltelli"] = 0
             stato_gioco["merci"]["spezie"] += spezie
             print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
 
-def baratto_diamanti(merci_baratto, stato_gioco): #TODO aggiungere condizione nel mein per la chiamata di questa funzione
+def baratto_diamanti(merci_baratto, stato_gioco):
     print("\n--- BARATTO: DIAMANTI ---")
     print("Offrirai tutti i tuoi diamanti. Scegli una sola opzione:")
-    perle = stato_gioco["merci"]["diamanti"]//merci_baratto["perla"]["diamanti"]
-    manufatti = stato_gioco["merci"]["diamanti"]//merci_baratto["manufatti"]["diamanti"]
-    spezie = stato_gioco["merci"]["diamanti"]//merci_baratto["spezie"]["diamanti"]
-
+    perle     = stato_gioco["merci"]["diamanti"] // merci_baratto["perla"]["diamanti"]
+    manufatti = stato_gioco["merci"]["diamanti"] // merci_baratto["manufatti"]["diamanti"]
+    spezie    = stato_gioco["merci"]["diamanti"] // merci_baratto["spezie"]["diamanti"]
     print(f"  1) {perle} perle (rivendibili a {merci_baratto['perla']['prezzo stimato']} dobloni l'una  - totale stimato: {perle*merci_baratto['perla']['prezzo stimato']} dobloni)")
     print(f"  2) {manufatti} manufatti (rivendibili a {merci_baratto['manufatti']['prezzo stimato']} dobloni l'uno  - totale stimato: {manufatti*merci_baratto['manufatti']['prezzo stimato']} dobloni)")
     print(f"  3) {spezie} barattoli di spezie (rivendibili a {merci_baratto['spezie']['prezzo stimato']} doblone l'uno  - totale stimato: {spezie*merci_baratto['spezie']['prezzo stimato']} dobloni)")
-    
     corretto = False
     while not corretto:
         scelta = input("\nQuale scambio vuoi effettuare? (1, 2 o 3): ").strip()
-        
         if scelta not in ["1", "2", "3"]:
             print("  Scelta non valida, riprova.")
-
         elif scelta == "1":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["perle"] += perle
             print(f"  Hai ottenuto {perle} perle!")
             corretto = True
-
         elif scelta == "2":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["manufatti"] += manufatti
             print(f"  Hai ottenuto {manufatti} manufatti!")
             corretto = True
-        
         elif scelta == "3":
             stato_gioco["merci"]["diamanti"] = 0
             stato_gioco["merci"]["spezie"] += spezie
             print(f"  Hai ottenuto {spezie} barattoli di spezie!")
             corretto = True
-            
+
 def Resoconto_baratto(merci_baratto, stato_gioco):
     print("\n" + "=" * 50)
     print("BARATTO CONCLUSO!")
     print("Ecco il resoconto, hai ottenuto:")
-    print(f"  Perle:            {stato_gioco["merci"]['perle']} - totale stimato: {stato_gioco["merci"]['perle'] * merci_baratto['perla']['prezzo stimato']} dobloni")
-    print(f"  Manufatti:        {stato_gioco["merci"]['manufatti']} - totale stimato: {stato_gioco["merci"]['manufatti'] * merci_baratto['manufatti']['prezzo stimato']} dobloni")
-    print(f"  Barattoli spezie: {stato_gioco["merci"]['spezie']} - totale stimato: {stato_gioco["merci"]['spezie'] * merci_baratto['spezie']['prezzo stimato']} dobloni")
+    print(f"  Perle:            {stato_gioco['merci']['perle']} - totale stimato: {stato_gioco['merci']['perle'] * merci_baratto['perla']['prezzo stimato']} dobloni")
+    print(f"  Manufatti:        {stato_gioco['merci']['manufatti']} - totale stimato: {stato_gioco['merci']['manufatti'] * merci_baratto['manufatti']['prezzo stimato']} dobloni")
+    print(f"  Barattoli spezie: {stato_gioco['merci']['spezie']} - totale stimato: {stato_gioco['merci']['spezie'] * merci_baratto['spezie']['prezzo stimato']} dobloni")
     print("=" * 50)
 
-def Intro_tradimento(merci_baratto, stato_gioco): #TODO ricontrollo e se possibile semplificazione della funzione
-    # Questa funzione va chiamata solo se il giocatore ha armi residue
-
+def Intro_tradimento(merci_baratto, stato_gioco):
     ricavo_ipo = stato_gioco["merci"]["armi"] * 30 * merci_baratto["perla"]["prezzo stimato"]
-
-    print(f"\nDurante la notte un rivale del capotribù si presenta al vostro accampamento ")
-    print(f"offrendovi ben 30 perle per ogni arma che avete ")
+    print(f"\nDurante la notte un rivale del capotribù si presenta al vostro accampamento")
+    print(f"offrendovi ben 30 perle per ogni arma che avete")
     print(f"(ricavo ipotetico di {ricavo_ipo} dobloni).")
-
     scelta = input("Accetti la proposta del rivale del capotribù? (s/n): ").strip().lower()
     while scelta not in ["s", "n"]:
         print("Scelta non valida, riprovare.")
         scelta = input("Accetti la proposta del rivale del capotribù? (s/n): ").strip().lower()
-
     return scelta
 
-def Ricompensa(albatro): #TODO chiamare questa funzione solo se il giocatore non accetta di dare le armi al rivale
-    import random
+def Ricompensa(albatro):
     if albatro == True:
-        offerta=random.randint(5,20)
+        offerta = random.randint(5, 20)
     else:
-        offerta=random.randint(30,50)
-    
+        offerta = random.randint(30, 50)
     return offerta
 
-def Tradimento(stato_gioco,albatro):
-    import random
-
+def Tradimento(stato_gioco, albatro):
     stato_gioco["merci"]["perle"] += stato_gioco["merci"]["armi"] * 30
     stato_gioco["merci"]["armi"] = 0
-
     scoperto = False
-
     if albatro == True:
         scoperto = True
-    elif albatro == None:
+    elif albatro is None:
         scoperto = random.randint(1, 2) == 1
-
     return scoperto
 
-
-def calcolo_settimane_e_rifornimento(stato_gioco,albatro, CATALOGO_CIBO):
-    cibi=Calcolo_cibo_1_sett(CATALOGO_CIBO,stato_gioco)
-    
-    stato_gioco["cibo"]["verdura"] +=cibi[0] * 3
-    stato_gioco["cibo"]["frutta"] += cibi[1] * 3
-    stato_gioco["cibo"]["carne"] += cibi[2] * 3
-    stato_gioco["cibo"]["acqua"] += cibi[3] * 3
-
+def calcolo_settimane_e_rifornimento(stato_gioco, albatro, CATALOGO_CIBO):
+    cibi = Calcolo_cibo_1_sett(CATALOGO_CIBO, stato_gioco)
+    stato_gioco["cibo"]["verdura"] += cibi[0] * 3
+    stato_gioco["cibo"]["frutta"]  += cibi[1] * 3
+    stato_gioco["cibo"]["carne"]   += cibi[2] * 3
+    stato_gioco["cibo"]["acqua"]   += cibi[3] * 3
     if ce_ruolo(stato_gioco["equipaggio"], "navigatore"):
         settimane_agg = 1
     else:
         settimane_agg = 2
-    
     if albatro == True:
-        settimane_agg+=1
-    
-    return settimane_agg #TODO sommare settimane aggiuntive a settimane nel main
+        settimane_agg += 1
+    return settimane_agg
 
-def Profitto(stato_gioco,merci_baratto):
-    import random
-    oscillazione=random.choice([0.5,1,2])
-
+def Profitto(stato_gioco, merci_baratto):
+    oscillazione = random.choice([0.5, 1, 2])
     profitto = (
-        stato_gioco["merci"]["perle"]*(merci_baratto["perla"]["prezzo stimato"]*oscillazione)+
-        stato_gioco["merci"]["manufatti"]*(merci_baratto["manufatti"]["prezzo stimato"]*oscillazione)+
-        stato_gioco["merci"]["spezie"]*(merci_baratto["spezie"]["prezzo stimato"]*oscillazione)
-        )
-    
+        stato_gioco["merci"]["perle"]     * (merci_baratto["perla"]["prezzo stimato"]     * oscillazione) +
+        stato_gioco["merci"]["manufatti"] * (merci_baratto["manufatti"]["prezzo stimato"] * oscillazione) +
+        stato_gioco["merci"]["spezie"]    * (merci_baratto["spezie"]["prezzo stimato"]    * oscillazione)
+    )
     return profitto
 
-def Calcolo_spesa_equipaggio(stato_gioco,settimane):
-    
-    spesa_equip=0
-
+def Calcolo_spesa_equipaggio(stato_gioco, settimane):
+    spesa_equip = 0
     for membro in stato_gioco["equipaggio"].values():
         if membro["ingaggiato"]:
-            spesa_equip += membro["paga_settimanale"]*settimane
-
+            spesa_equip += membro["paga_settimanale"] * settimane
     return spesa_equip
 
-def Stampa_situazione_economica(profitto,stato_gioco,spesa_equip):
-
-    print(f"il profitto ricavato dalla vendita delle tue merci è di {profitto} dobloni !!!")
-    stato_gioco["monete"]+=profitto
-    print(f"questi si sommano ai tuoi dobloni residui e raggiungi la cospiqua somma di {stato_gioco["monete"]}")
-    print(f"ricordati però che devi pagare i prodi membri del tuo equipaggio che ti hanno accompagnato nella tua avventura")
-    print(f"dovrai pagare in totale una somma pari a {spesa_equip}")
-    stato_gioco["monete"]-=spesa_equip
-    print(f"questo è quello che ti rimane: {stato_gioco["monete"]} dobloni") #TODO nel main fare un if che se monete < 0 chiama la funzione scelta
+def Stampa_situazione_economica(profitto, stato_gioco, spesa_equip):
+    print(f"Il profitto ricavato dalla vendita delle tue merci è di {profitto:.1f} dobloni!")
+    stato_gioco["monete"] += profitto
+    print(f"Questi si sommano ai tuoi dobloni residui: raggiungi la cospicua somma di {stato_gioco['monete']:.1f} dobloni.")
+    print(f"Ricordati però che devi pagare i prodi membri del tuo equipaggio.")
+    print(f"Dovrai pagare in totale: {spesa_equip} dobloni.")
+    stato_gioco["monete"] -= spesa_equip
+    print(f"Quello che ti rimane: {stato_gioco['monete']:.1f} dobloni.")
 
 def Scelta():
-    print("Purtroppo i tuoi dobloni non bastano a coprire le spese dell'equipaggio")
-    scelta=input("vuoi mettere all'asta la tua nave nel tentativo di ricavarne abbastanza per ripagare i tuoi uomini? (s/n) ").strip().lower()
-    
-    while scelta not in ["s","n"]:
-        print("scelta non valida")
-        scelta=input("vuoi mettere all'asta la tua nave nel tentativo di ricavarne abbastanza per ripagare i tuoi uomini? (s/n) ").strip().lower()
-    
-    return scelta #TODO nel main fare un if che se scelta == s chiama la funzione Asta, altrimenti chiama bad ending
+    print("Purtroppo i tuoi dobloni non bastano a coprire le spese dell'equipaggio.")
+    scelta = input("Vuoi mettere all'asta la tua nave nel tentativo di ricavarne abbastanza per ripagare i tuoi uomini? (s/n): ").strip().lower()
+    while scelta not in ["s", "n"]:
+        print("Scelta non valida.")
+        scelta = input("(s/n): ").strip().lower()
+    return scelta
 
 def Asta(stato_gioco):
-    import random
-    valori_temp=[350,500,550,600,650,700,750,800,850,1200,350,500,550,600,650,700,750,800,850,1200]
-    valori=[50,300,400,450]
-    
-    print("Questa è l'asta, ti verranno fatte delle offerte per la tua nave, che potrai accettare o rifiutare")
-
-    risposta=""
+    valori_temp = [350, 500, 550, 600, 650, 700, 750, 800, 850, 1200,
+                   350, 500, 550, 600, 650, 700, 750, 800, 850, 1200]
+    valori = [50, 300, 400, 450]
+    print("Questa è l'asta. Ti verranno fatte delle offerte per la tua nave, che potrai accettare o rifiutare.")
+    risposta = ""
     while risposta != "s":
-        lista=random.randint(1,2)
-
+        lista = random.randint(1, 2)
         if not valori_temp:
-            lista=2
-
+            lista = 2
         if lista == 1:
-            valore=random.randint(0,len(valori_temp)-1)
-            offerta=valori_temp[valore]
-            print(f"un offerente ti propone {offerta} dobloni")
-            risposta=input("accetti? (s/n) ").strip().lower()
-            while risposta not in ["s","n"]:
-                print("scelta non valida")
-                risposta=input("accetti? (s/n) ").strip().lower()
+            valore = random.randint(0, len(valori_temp) - 1)
+            offerta = valori_temp[valore]
+            print(f"Un offerente ti propone {offerta} dobloni.")
+            risposta = input("Accetti? (s/n): ").strip().lower()
+            while risposta not in ["s", "n"]:
+                print("Scelta non valida.")
+                risposta = input("Accetti? (s/n): ").strip().lower()
             valori_temp.pop(valore)
-
         else:
-            valore=random.randint(0,len(valori)-1)
-            offerta=valori[valore]
-            print(f"un offerente ti propone {offerta}")
-            risposta=input("accetti? (s/n) ").strip().lower()
-            while risposta not in ["s","n"]:
-                print("scelta non valida")
-                risposta=input("accetti? (s/n) ").strip().lower()
-       
-    stato_gioco["monete"]+=offerta
+            valore = random.randint(0, len(valori) - 1)
+            offerta = valori[valore]
+            print(f"Un offerente ti propone {offerta} dobloni.")
+            risposta = input("Accetti? (s/n): ").strip().lower()
+            while risposta not in ["s", "n"]:
+                print("Scelta non valida.")
+                risposta = input("Accetti? (s/n): ").strip().lower()
+    stato_gioco["monete"] += offerta
 
 def Good_ending(stato_gioco):
-
     if stato_gioco["monete"] > 2000:
-        print(f"sei riuscito a portarti a casa ben {stato_gioco["monete"]} dobloni, più di quelli che avevi inizialmente congratulazioni !!!")
-    
-    elif 1000<= stato_gioco["monete"] <= 2000 :
-        print(f"sei riuscito a portarti a casa ben {stato_gioco["monete"]} dobloni, non male !!")
-    
+        print(f"Sei riuscito a portarti a casa ben {stato_gioco['monete']:.1f} dobloni, più di quelli che avevi inizialmente. Congratulazioni!")
+    elif 1000 <= stato_gioco["monete"] <= 2000:
+        print(f"Sei riuscito a portarti a casa {stato_gioco['monete']:.1f} dobloni. Non male!")
     elif 10 < stato_gioco["monete"] < 1000:
-        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} dobloni, poteva andare meglio, ma è già qualcosa !")
-    
+        print(f"Sei riuscito a portarti a casa {stato_gioco['monete']:.1f} dobloni. Poteva andare meglio, ma è già qualcosa!")
     elif 1 < stato_gioco["monete"] <= 10:
-        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} dobloni, il giusto per comprati un gelato")
-
+        print(f"Sei riuscito a portarti a casa {stato_gioco['monete']:.1f} dobloni. Il giusto per comprarti un gelato.")
     else:
-        print(f"sei riuscito a portarti a casa {stato_gioco["monete"]} singolo doblone, una misera consolazione")
+        print(f"Sei riuscito a portarti a casa {stato_gioco['monete']:.1f} doblone. Una misera consolazione.")
 
 def Neutral_ending():
-    print("sei riuscito a ripagare il tuo equipaggio ma non ti è rimasto nulla...tanta fatica per niente")
+    print("Sei riuscito a ripagare il tuo equipaggio ma non ti è rimasto nulla... Tanta fatica per niente.")
 
 def Bad_ending():
-    print("non sei riuscito a ripagare nemmeno il tuo equipaggio, non è stata proprio una bella idea quella del viaggio verso il nuovo mondo")
+    print("Non sei riuscito a ripagare nemmeno il tuo equipaggio. Non è stata proprio una bella idea quella del viaggio verso il Nuovo Mondo.")
 
-
-# -------CODICE PRINCIPALE------
 
 print("--- BENVENUTO IN NUOVO MONDO ---")
 
-scelta = input("Vuoi caricare la partita precedente? (s/n): ").lower().strip()
-if scelta == "s":
+SETTIMANE      = 8
+settimane      = 8
+sett_vecchie   = 8         
+delta_morale   = 0
+li_eventi      = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 90, 91, 12, 13, 14, 15, 16, 17, 18]
+conta_set      = 1
+punti_ammutinamento = 0
+game_over      = False
+colpito        = None      
+razione_dimezzata = False  
+
+scelta_carica = input("Vuoi caricare la partita precedente? (s/n): ").lower().strip()
+if scelta_carica == "s":
     try:
         dati_caricati = Carica()
         stato_gioco = dati_caricati
         print("Partita caricata con successo!")
-    except:
+    except Exception:
         print("Nessun salvataggio trovato. Inizio nuova partita.")
+        fase_ingaggio()
+        fase_acquisto_cibo()
+        fase_acquisto_merci()
+        riepilogo_pre_partenza()
+else:
 
-           
-
-# parte cars------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    fase_ingaggio() 
-    fase_acquisto_cibo() 
-    fase_acquisto_merci() 
+    fase_ingaggio()
+    fase_acquisto_cibo()
+    fase_acquisto_merci()
     riepilogo_pre_partenza()
 
-# parte crotz------------------------------------------------------------------------------------------------------------------------------------------------------
-while settimane >= conta_set and not game_over and punti_ammutinamento < 100:
-    
+
+Salva(stato_gioco)
+
+while conta_set <= settimane and not game_over and punti_ammutinamento < 100:
+
     if conta_vivi(stato_gioco["equipaggio"]) == 0:
-        print("Tutti i membri sono morti, il gioco finisce qui. GAME OVER")
+        print("Tutti i membri dell'equipaggio sono morti. GAME OVER.")
         game_over = True
-    else:
-        n_evento = random.choice(li_eventi)
-        
-        print(f"\n----- SETTIMANA {conta_set} -----")
-        
-        
-        if n_evento == 0:
-            pg_morto, delta_morale = uomo_in_mare(stato_gioco["equipaggio"], delta_morale)
-            print(f"--- EVENTO UOMO IN MARE --- \nIl {pg_morto.upper()} è caduto in mare ed è MORTO")
-            if 0 in li_eventi:
-                li_eventi.remove(0)
-        
-        elif n_evento == 1:
-            stato_gioco["cibo"], perdite_verdure = prova_unica(stato_gioco["cibo"], "verdura", qta_da_perdere)
-            print(f"--- EVENTO VERDURA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_verdure:.1f} Kg di VERDURE")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 2:
-            stato_gioco["cibo"], perdite_frutta = prova_unica(stato_gioco["cibo"], "frutta", qta_da_perdere)
-            print(f"--- EVENTO FRUTTA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_frutta:.1f} Kg di FRUTTA")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 3:
-            stato_gioco["cibo"], perdite_carne = prova_unica(stato_gioco["cibo"], "carne", qta_da_perdere)
-            print(f"--- EVENTO CARNE IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_carne:.1f} Kg di CARNE")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 4:
-            stato_gioco["cibo"], perdite_acqua = prova_unica(stato_gioco["cibo"], "acqua", qta_da_perdere)
-            print(f"--- EVENTO ACQUA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_acqua:.1f} BARILI D'ACQUA")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 5:
-            stato_gioco["cibo"], qta_pescata = tempesta_miracolosa(stato_gioco["cibo"], "carne")
-            print(f"--- EVENTO PESCA MIRACOLOSA --- \nDurante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 6:
-            stato_gioco["cibo"], qta_acqua = tempesta_miracolosa(stato_gioco["cibo"], "acqua")
-            print(f"--- EVENTO TEMPESTA MIRACOLOSA --- \nDurante la tempesta alcuni uomini hanno raccolto {qta_acqua} BARILI D'ACQUA")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 7:
-            stato_gioco["equipaggio"], settimane, delta_morale, morale_agg = vento_favorevole(settimane, stato_gioco["equipaggio"], delta_morale)
-            print(f"--- EVENTO VENTO FAVOREVOLE --- \nUn vento favorevole accorcia il viaggio di 1 settimana!\nMorale +{morale_agg} per ogni membro")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 8:
-            stato_gioco["merci"], perdite_medicinali = prova_unica(stato_gioco["merci"], "medicinali", qta_da_perdere)
-            print(f"--- EVENTO CATTIVO TEMPO --- \nIl cattivo tempo ha rovesciato {perdite_medicinali:.1f} BOTTIGLIE DI MEDICINALI")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 9:
-            stato_gioco["merci"], perdite_armi = prova_unica(stato_gioco["merci"], "armi", qta_da_perdere)
-            print(f"--- EVENTO ONDATA --- \nUn'onda ha fatto perdere {perdite_armi:.1f} ARMI")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento == 10:
-            stato_gioco["merci"], perdite_stoffe = prova_unica(stato_gioco["merci"], "stoffa", qta_da_perdere)
-            print(f"--- EVENTO INFESTAZIONE RATTI --- \nI ratti hanno rovinato {perdite_stoffe:.1f} STOFFE")
-            if n_evento in li_eventi: li_eventi.remove(n_evento)
-        
-        elif n_evento in [11, 90, 91]:
-            print("--- EVENTO: AVVISTAMENTO ALBATRO ---")
-            colpito, stato_gioco["merci"], decisone_sparo, qta_guad, armi_utilizzate = avvistamento_albatro(
-                stato_gioco["equipaggio"], stato_gioco["merci"], si_no, conta_vivi, Min_sparo_difesa, stato_gioco["cibo"]
-            )
-            li_eventi.remove(n_evento) if n_evento in li_eventi else None
-            if decisone_sparo:
-                if colpito:
-                    print(f"L'albatro è stato abbattuto! +{qta_guad} kg di carne (usate {armi_utilizzate} armi)")
-                else:
-                    print(f"L'albatro non è stato colpito (usate {armi_utilizzate} armi)")
-            else:
-                print("L'equipaggio ha deciso di non sparare all'albatro.")
-        
-        elif n_evento == 12:
-            
-            print("--- EVENTO: AVVISTAMENTO SCIALUPPA ---")
-            li_eventi.remove(n_evento)
-            deciosione_scialuppa, merci_precedente = avvistamento_scialuppa(si_no, stato_gioco["merci"], RUOLI, stato_gioco["equipaggio"])
+        break
 
-        elif n_evento == 18:
-            print("--- NESSUN IMPREVISTO ---")
+    delta_morale = 0
+    razione_dimezzata = False
 
-        
-        print("\n--- CONTROLLO SCORTE RESIDUE ---")
-        settimane_restanti = settimane - conta_set + 1
-        
-        delta_morale = Controllo_scorte(
-            stato_gioco,
-            CATALOGO_CIBO,
-            settimane_restanti,
-            moltiplicatori_razioni,
-            delta_morale
+    n_evento = random.choice(li_eventi)
+    print(f"\n{'='*50}")
+    print(f"  SETTIMANA {conta_set} di {settimane}")
+    print(f"{'='*50}")
+
+
+    if n_evento == 0:
+        pg_morto, delta_morale = uomo_in_mare(stato_gioco["equipaggio"], delta_morale)
+        print(f"--- EVENTO: UOMO IN MARE ---\nIl {pg_morto.upper()} è caduto in mare ed è MORTO.")
+        if 0 in li_eventi:
+            li_eventi.remove(0)
+
+    elif n_evento == 1:
+        stato_gioco["cibo"], perdite_verdure = prova_unica(stato_gioco["cibo"], "verdura", qta_da_perdere)
+        print(f"--- EVENTO: VERDURA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_verdure:.1f} kg di VERDURE.")
+        li_eventi.remove(1)
+
+    elif n_evento == 2:
+        stato_gioco["cibo"], perdite_frutta = prova_unica(stato_gioco["cibo"], "frutta", qta_da_perdere)
+        print(f"--- EVENTO: FRUTTA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_frutta:.1f} kg di FRUTTA.")
+        li_eventi.remove(2)
+
+    elif n_evento == 3:
+        stato_gioco["cibo"], perdite_carne = prova_unica(stato_gioco["cibo"], "carne", qta_da_perdere)
+        print(f"--- EVENTO: CARNE IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_carne:.1f} kg di CARNE.")
+        li_eventi.remove(3)
+
+    elif n_evento == 4:
+        stato_gioco["cibo"], perdite_acqua = prova_unica(stato_gioco["cibo"], "acqua", qta_da_perdere)
+        print(f"--- EVENTO: ACQUA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_acqua:.1f} BARILI D'ACQUA.")
+        li_eventi.remove(4)
+
+    elif n_evento == 5:
+        stato_gioco["cibo"], qta_pescata = tempesta_miracolosa(stato_gioco["cibo"], "carne")
+        print(f"--- EVENTO: PESCA MIRACOLOSA ---\nDurante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE.")
+        li_eventi.remove(5)
+
+    elif n_evento == 6:
+        stato_gioco["cibo"], qta_acqua = tempesta_miracolosa(stato_gioco["cibo"], "acqua")
+        print(f"--- EVENTO: TEMPESTA MIRACOLOSA ---\nDurante la tempesta alcuni uomini hanno raccolto {qta_acqua} BARILI D'ACQUA.")
+        li_eventi.remove(6)
+
+    elif n_evento == 7:
+        stato_gioco["equipaggio"], settimane, delta_morale, morale_agg = vento_favorevole(
+            settimane, stato_gioco["equipaggio"], delta_morale
         )
+        print(f"--- EVENTO: VENTO FAVOREVOLE ---\nUn vento favorevole accorcia il viaggio di 1 settimana!\nMorale +{morale_agg} per ogni membro.")
+        li_eventi.remove(7)
 
-        
-        input("\nPremi INVIO per aggiornare il morale e vedere il riepilogo...")
-        
-        stato_gioco["equipaggio"] = aggiungi_mor_equip(stato_gioco["equipaggio"], delta_morale)
-        calcola_riepilogo(stato_gioco["merci"], stato_gioco["cibo"], stato_gioco["equipaggio"])
+    elif n_evento == 8:
+        stato_gioco["merci"], perdite_medicinali = prova_unica(stato_gioco["merci"], "medicinali", qta_da_perdere)
+        print(f"--- EVENTO: CATTIVO TEMPO ---\nIl cattivo tempo ha rovesciato {perdite_medicinali:.1f} BOTTIGLIE DI MEDICINALI.")
+        li_eventi.remove(8)
+
+    elif n_evento == 9:
+        stato_gioco["merci"], perdite_armi = prova_unica(stato_gioco["merci"], "armi", qta_da_perdere)
+        print(f"--- EVENTO: ONDATA ---\nUn'onda ha fatto perdere {perdite_armi:.1f} ARMI.")
+        li_eventi.remove(9)
+
+    elif n_evento == 10:
+        stato_gioco["merci"], perdite_stoffe = prova_unica(stato_gioco["merci"], "stoffa", qta_da_perdere)
+        print(f"--- EVENTO: INFESTAZIONE RATTI ---\nI ratti hanno rovinato {perdite_stoffe:.1f} STOFFE.")
+        li_eventi.remove(10)
+
+    elif n_evento in [11, 90, 91]:
+        print("--- EVENTO: AVVISTAMENTO ALBATRO ---")
+        colpito, stato_gioco["merci"], decisione_sparo, qta_guad, armi_utilizzate = avvistamento_albatro(
+            stato_gioco["equipaggio"], stato_gioco["merci"], si_no,
+            conta_vivi, Min_sparo_difesa, stato_gioco["cibo"]
+        )
+        if n_evento in li_eventi:
+            li_eventi.remove(n_evento)
+        if decisione_sparo:
+            if colpito:
+                print(f"L'albatro è stato abbattuto! +{qta_guad} kg di carne (usate {armi_utilizzate} armi).")
+            else:
+                print(f"L'albatro non è stato colpito (usate {armi_utilizzate} armi).")
+        else:
+            print("L'equipaggio ha deciso di non sparare all'albatro.")
+
+    elif n_evento == 12:
+        print("--- EVENTO: AVVISTAMENTO SCIALUPPA ---")
+        decisione_scialuppa, merci_precedente = avvistamento_scialuppa(
+            si_no, stato_gioco["merci"], RUOLI, stato_gioco["equipaggio"]
+        )
+        if decisione_scialuppa:
+            print("Avete salvato 4 naufraghi e guadagnato merci extra!")
+            if merci_precedente:
+                print("Le merci a bordo sono aumentate.")
+        else:
+            print("Avete deciso di ignorare la scialuppa.")
+        li_eventi.remove(12)
+
+    elif n_evento == 13:
+        print("--- EVENTO: RAFFICHE DI VENTO ---")
+        sett_perse, settimane, presenza = raffiche_di_vento(
+            stato_gioco["equipaggio"], settimane, "navigatore"
+        )
+        if presenza:
+            print(f"Il navigatore ha guidato la nave, perdendo solo 1 settimana aggiuntiva.")
+        else:
+            print(f"Senza navigatore le raffiche ci hanno fatto perdere {sett_perse} settimane aggiuntive!")
+        li_eventi.remove(13)
+
+    elif n_evento == 14:
+        print("--- EVENTO: EPIDEMIA ---")
+        malati, morti, guariti, med_persi, delta_morale = epidemia(
+            stato_gioco["equipaggio"], stato_gioco["merci"], ce_ruolo, delta_morale
+        )
+        print(f"  Malati: {malati}  |  Morti: {morti}  |  Guariti: {guariti}  |  Medicinali usati: {med_persi}")
+        if morti > 0:
+            print(f"  {morti} membri non ce l'hanno fatta.")
+        li_eventi.remove(14)
+
+    elif n_evento == 15:
+        print("--- EVENTO: ATTACCO PIRATA ---")
+        uomini_persi, n_pirati, n_difensori, delta_morale = attacco_pirata(
+            stato_gioco["equipaggio"], conta_vivi, stato_gioco["merci"],
+            Min_sparo_difesa, delta_morale
+        )
+        print(f"  Pirati: {n_pirati}  |  Difensori: {n_difensori}  |  Uomini persi: {uomini_persi}")
+        li_eventi.remove(15)
+
+    elif n_evento == 16:
+        print("--- EVENTO: AVVISTAMENTO ISOLA ---")
+        esito_isola, merci_prec_isola, sett_agg_isola = avvistamento_isola(
+            si_no, colpito, stato_gioco["merci"]
+        )
+        if esito_isola == "non raggiunta":
+            print("Avete deciso di non andare sull'isola.")
+        elif esito_isola == "non abitata":
+            print(f"L'isola era desabitata. Avete perso {sett_agg_isola} settimane.")
+            settimane += sett_agg_isola
+        elif esito_isola == "ostile":
+            print(f"Gli abitanti erano ostili! Siete fuggiti perdendo {sett_agg_isola} settimane.")
+            settimane += sett_agg_isola
+        else:
+            print(f"Isola abitata e amichevole! Avete ottenuto merci extra (costo: {sett_agg_isola} settimane).")
+            settimane += sett_agg_isola
+        li_eventi.remove(16)
+
+    elif n_evento == 17:
+        print("--- NESSUN IMPREVISTO ---\nLa settimana trascorre tranquilla.")
+        li_eventi.remove(17)
+
+    elif n_evento == 18:
+        print("--- NESSUN IMPREVISTO ---\nLa settimana trascorre tranquilla.")
 
 
+    print("\n--- CONTROLLO SCORTE RESIDUE ---")
+    settimane_restanti = settimane - conta_set 
 
+    delta_morale = Controllo_scorte(
+        stato_gioco,
+        CATALOGO_CIBO,
+        max(settimane_restanti, 1),
+        moltiplicatori_razioni,
+        delta_morale
+    )
 
+    razione_dimezzata = any(v < 1 for v in moltiplicatori_razioni.values())
 
+    input("\nPremi INVIO per aggiornare il morale e vedere il riepilogo...")
+    stato_gioco["equipaggio"] = aggiungi_mor_equip(stato_gioco["equipaggio"], delta_morale)
 
+    settimane = ricalcolo_settimane(settimane, stato_gioco["equipaggio"], conta_vivi)
 
+    calcola_riepilogo(stato_gioco["merci"], stato_gioco["cibo"], stato_gioco["equipaggio"])
 
+    differenza_settimane = settimane - sett_vecchie   # settimane aggiunte rispetto alle 8 originali
+    punti_ammutinamento = ammutinamento(
+        razione_dimezzata,
+        ce_ruolo,
+        stato_gioco["equipaggio"],
+        colpito,
+        conta_vivi,
+        max(differenza_settimane, 0)
+    )
+    printare_ammutinamento_cond(punti_ammutinamento)
+    if punti_ammutinamento >= 100:
+        game_over = True
+        break
 
+    Salva(stato_gioco)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#parte mila------------------------------------------------------------------------------------------------------------------------------------------------------
+    conta_set += 1
 
 if not game_over:
-    print("\n--- TERRA IN VISTA! ---")
-    
+    print("\n" + "=" * 50)
+    print("  TERRA IN VISTA!")
+    print("=" * 50)
+
     if stato_gioco["merci"]["armi"] > 0:
         fuoco = input("Vuoi aprire il fuoco sugli indigeni? (s/n): ").strip().lower()
         if fuoco == "s":
-            print("Siete stati massacrati. GAME OVER.")
+            print("Siete stati massacrati dagli indigeni. GAME OVER.")
             game_over = True
 
     if not game_over:
 
-        if stato_gioco["merci"]["sale"] > 0: 
+        if stato_gioco["merci"]["sale"] > 0:
             baratto_sale(merci_baratto, stato_gioco)
         else:
-            print("Siccome non hai abbastanza sale si passerà subito al commercio successivo")
-        
-        if stato_gioco["merci"]["stoffa"] > 0: 
+            print("Non hai sale, si passa al commercio successivo.")
+
+        if stato_gioco["merci"]["stoffa"] > 0:
             baratto_stoffa(merci_baratto, stato_gioco)
         else:
-            print("Siccome non hai abbastanza stoffa si passerà subito al commercio successivo")
+            print("Non hai stoffa, si passa al commercio successivo.")
 
-        if stato_gioco["merci"]["coltelli"] > 0: 
+        if stato_gioco["merci"]["coltelli"] > 0:
             baratto_coltelli(merci_baratto, stato_gioco)
         else:
-            print("Siccome non hai abbastanza coltelli si passerà subito al commercio successivo")
+            print("Non hai coltelli, si passa al commercio successivo.")
 
-        if stato_gioco["merci"]["diamanti"] > 0: 
+        if stato_gioco["merci"]["diamanti"] > 0:
             baratto_diamanti(merci_baratto, stato_gioco)
         else:
-            print("Siccome non hai abbastanza diamanti si passerà subito al commercio successivo")
+            print("Non hai diamanti, si passa al commercio successivo.")
 
-        Resoconto_baratto(merci_baratto, stato_gioco)       
-        
+        Resoconto_baratto(merci_baratto, stato_gioco)
+
         if stato_gioco["merci"]["armi"] > 0:
             if Intro_tradimento(merci_baratto, stato_gioco) == "s":
-                if Tradimento(stato_gioco, colpito):
-                    print("il capovillaggio ha scoperto che hai supportato il suo rivale e ha decretato lo sterminio della tua ciurma. GAME OVER.")
+                scoperto = Tradimento(stato_gioco, colpito)
+                if scoperto:
+                    print("Il capovillaggio ha scoperto che hai supportato il suo rivale e ha decretato lo sterminio della tua ciurma. GAME OVER.")
                     game_over = True
+                else:
+                    print("Il tradimento è andato a buon fine. Hai ottenuto molte perle!")
             else:
-                stato_gioco["merci"]["perle"] += Ricompensa(colpito)
-                print(f"il capovillaggio ha saputo che non hai accettato la proposta del suo rivale e come ricompensa ti dona {Ricompensa(colpito)} perle!")
-        
+                ricompensa = Ricompensa(colpito)
+                stato_gioco["merci"]["perle"] += ricompensa
+                print(f"Il capovillaggio ha saputo che non hai accettato la proposta del suo rivale e come ricompensa ti dona {ricompensa} perle!")
+
     if not game_over:
-        print("il capotribù vi fornisce le scorte che bastano a coprire 3 settimane di viaggio per il ritorno")
-        print("la destinazione non sarà la patria, ma verso l'isola civilizzata più vicina nel quale potreste rivendere le merci aquistate nel nuovo mondo")
-        settimane_ritorno=calcolo_settimane_e_rifornimento(stato_gioco, colpito, CATALOGO_CIBO)
-        settimane_ritorno+=conta_set
-        
-        if settimane_ritorno==1:
-            print("Il viaggio dura solamente una settimana e riuscite ad arrivare sani e salvi all'isola più vicina !!!")
+        print("\nIl capotribù vi fornisce le scorte sufficienti per 3 settimane di viaggio di ritorno.")
+        print("La destinazione sarà l'isola civilizzata più vicina dove potreste rivendere le merci.")
 
-        if settimane_ritorno==2:
-            print("Il viaggio dura due settimane e arrivate sull'isola più vicina piena di mercanti pronti a commerciare !!")
+        settimane_ritorno = calcolo_settimane_e_rifornimento(stato_gioco, colpito, CATALOGO_CIBO)
 
-        if settimane_ritorno==3:
-            print("Il viaggio dura tre settimane, arrivate giusti giusti con le scorte fornite dal capotribù, ma incolumi e pronti a rivendere le merci che avete accumulato! ")
-        
-        entrate=Profitto(stato_gioco,merci_baratto)
-        costo_equip=Calcolo_spesa_equipaggio(stato_gioco,conta_set)
-        Stampa_situazione_economica(entrate,stato_gioco,costo_equip)
-        
-           
+        if settimane_ritorno == 1:
+            print("Il viaggio dura solamente una settimana e riuscite ad arrivare sani e salvi all'isola più vicina!")
+        elif settimane_ritorno == 2:
+            print("Il viaggio dura due settimane e arrivate sull'isola più vicina, piena di mercanti pronti a commerciare!")
+        else:
+            print("Il viaggio dura tre settimane. Arrivate giusti giusti con le scorte, ma incolumi e pronti a rivendere le merci!")
+
+        entrate = Profitto(stato_gioco, merci_baratto)
+        costo_equip = Calcolo_spesa_equipaggio(stato_gioco, conta_set)
+        Stampa_situazione_economica(entrate, stato_gioco, costo_equip)
+
         if stato_gioco["monete"] < 0:
             if Scelta() == "s":
                 Asta(stato_gioco)
-                    
+
         if stato_gioco["monete"] > 0:
             Good_ending(stato_gioco)
         elif stato_gioco["monete"] == 0:
