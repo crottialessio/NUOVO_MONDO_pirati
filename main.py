@@ -119,7 +119,11 @@ def paga_stimata(settimane=8):
     paghe = [m["paga_settimanale"] for m in stato_gioco["equipaggio"].values()]
     return sum(paghe) * settimane
 
+<<<<<<< HEAD
 def input_intero(prompt,minimo=None, massimo=None):
+=======
+def input_intero(prompt, minimo=None, massimo=None):
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
     try:
         val = int(input(prompt))
     except ValueError:
@@ -954,6 +958,7 @@ def Bad_ending():
 
 print("--- BENVENUTO IN NUOVO MONDO ---")
 
+<<<<<<< HEAD
 SETTIMANE=8
 settimane=8
 sett_vecchie=8
@@ -970,6 +975,24 @@ if scelta_carica=="s":
     try:
         dati_caricati=Carica()
         stato_gioco=dati_caricati
+=======
+SETTIMANE      = 8
+settimane      = 8
+sett_vecchie   = 8         
+delta_morale   = 0
+li_eventi      = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 90, 91, 12, 13, 14, 15, 16, 17, 18]
+conta_set      = 1
+punti_ammutinamento = 0
+game_over      = False
+colpito        = None      
+razione_dimezzata = False  
+
+scelta_carica = input("Vuoi caricare la partita precedente? (s/n): ").lower().strip()
+if scelta_carica == "s":
+    try:
+        dati_caricati = Carica()
+        stato_gioco = dati_caricati
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
         print("Partita caricata con successo!")
     except Exception:
         print("Nessun salvataggio trovato. Inizio nuova partita.")
@@ -978,11 +1001,16 @@ if scelta_carica=="s":
         fase_acquisto_merci()
         riepilogo_pre_partenza()
 else:
+<<<<<<< HEAD
+=======
+
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
     fase_ingaggio()
     fase_acquisto_cibo()
     fase_acquisto_merci()
     riepilogo_pre_partenza()
 
+<<<<<<< HEAD
 Salva(stato_gioco)
 
 while conta_set<=settimane and not game_over and punti_ammutinamento<100:
@@ -994,16 +1022,39 @@ while conta_set<=settimane and not game_over and punti_ammutinamento<100:
     razione_dimezzata=False
     n_evento=random.choice(li_eventi)
     
+=======
+
+Salva(stato_gioco)
+
+while conta_set <= settimane and not game_over and punti_ammutinamento < 100:
+
+    if conta_vivi(stato_gioco["equipaggio"]) == 0:
+        print("Tutti i membri dell'equipaggio sono morti. GAME OVER.")
+        game_over = True
+        break
+
+    delta_morale = 0
+    razione_dimezzata = False
+
+    n_evento = random.choice(li_eventi)
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
     print(f"\n{'='*50}")
     print(f"  SETTIMANA {conta_set} di {settimane}")
     print(f"{'='*50}")
 
+<<<<<<< HEAD
     if n_evento==0:
         pg_morto,delta_morale=uomo_in_mare(stato_gioco["equipaggio"],delta_morale)
+=======
+
+    if n_evento == 0:
+        pg_morto, delta_morale = uomo_in_mare(stato_gioco["equipaggio"], delta_morale)
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
         print(f"--- EVENTO: UOMO IN MARE ---\nIl {pg_morto.upper()} è caduto in mare ed è MORTO.")
         if 0 in li_eventi:
             li_eventi.remove(0)
 
+<<<<<<< HEAD
     elif n_evento==1:
         stato_gioco["cibo"],perdite_verdure=prova_unica(stato_gioco["cibo"],"verdura",qta_da_perdere)
         print(f"--- EVENTO: VERDURA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_verdure:.1f} kg di VERDURE.")
@@ -1057,6 +1108,66 @@ while conta_set<=settimane and not game_over and punti_ammutinamento<100:
     elif n_evento in[11,90,91]:
         print("--- EVENTO: AVVISTAMENTO ALBATRO ---")
         colpito,stato_gioco["merci"],decisione_sparo,qta_guad,armi_utilizzate=avvistamento_albatro(stato_gioco["equipaggio"],stato_gioco["merci"],si_no,conta_vivi,Min_sparo_difesa,stato_gioco["cibo"])
+=======
+    elif n_evento == 1:
+        stato_gioco["cibo"], perdite_verdure = prova_unica(stato_gioco["cibo"], "verdura", qta_da_perdere)
+        print(f"--- EVENTO: VERDURA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_verdure:.1f} kg di VERDURE.")
+        li_eventi.remove(1)
+
+    elif n_evento == 2:
+        stato_gioco["cibo"], perdite_frutta = prova_unica(stato_gioco["cibo"], "frutta", qta_da_perdere)
+        print(f"--- EVENTO: FRUTTA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_frutta:.1f} kg di FRUTTA.")
+        li_eventi.remove(2)
+
+    elif n_evento == 3:
+        stato_gioco["cibo"], perdite_carne = prova_unica(stato_gioco["cibo"], "carne", qta_da_perdere)
+        print(f"--- EVENTO: CARNE IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_carne:.1f} kg di CARNE.")
+        li_eventi.remove(3)
+
+    elif n_evento == 4:
+        stato_gioco["cibo"], perdite_acqua = prova_unica(stato_gioco["cibo"], "acqua", qta_da_perdere)
+        print(f"--- EVENTO: ACQUA IN MARE ---\nUna violenta tempesta ha trasportato in mare {perdite_acqua:.1f} BARILI D'ACQUA.")
+        li_eventi.remove(4)
+
+    elif n_evento == 5:
+        stato_gioco["cibo"], qta_pescata = tempesta_miracolosa(stato_gioco["cibo"], "carne")
+        print(f"--- EVENTO: PESCA MIRACOLOSA ---\nDurante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE.")
+        li_eventi.remove(5)
+
+    elif n_evento == 6:
+        stato_gioco["cibo"], qta_acqua = tempesta_miracolosa(stato_gioco["cibo"], "acqua")
+        print(f"--- EVENTO: TEMPESTA MIRACOLOSA ---\nDurante la tempesta alcuni uomini hanno raccolto {qta_acqua} BARILI D'ACQUA.")
+        li_eventi.remove(6)
+
+    elif n_evento == 7:
+        stato_gioco["equipaggio"], settimane, delta_morale, morale_agg = vento_favorevole(
+            settimane, stato_gioco["equipaggio"], delta_morale
+        )
+        print(f"--- EVENTO: VENTO FAVOREVOLE ---\nUn vento favorevole accorcia il viaggio di 1 settimana!\nMorale +{morale_agg} per ogni membro.")
+        li_eventi.remove(7)
+
+    elif n_evento == 8:
+        stato_gioco["merci"], perdite_medicinali = prova_unica(stato_gioco["merci"], "medicinali", qta_da_perdere)
+        print(f"--- EVENTO: CATTIVO TEMPO ---\nIl cattivo tempo ha rovesciato {perdite_medicinali:.1f} BOTTIGLIE DI MEDICINALI.")
+        li_eventi.remove(8)
+
+    elif n_evento == 9:
+        stato_gioco["merci"], perdite_armi = prova_unica(stato_gioco["merci"], "armi", qta_da_perdere)
+        print(f"--- EVENTO: ONDATA ---\nUn'onda ha fatto perdere {perdite_armi:.1f} ARMI.")
+        li_eventi.remove(9)
+
+    elif n_evento == 10:
+        stato_gioco["merci"], perdite_stoffe = prova_unica(stato_gioco["merci"], "stoffa", qta_da_perdere)
+        print(f"--- EVENTO: INFESTAZIONE RATTI ---\nI ratti hanno rovinato {perdite_stoffe:.1f} STOFFE.")
+        li_eventi.remove(10)
+
+    elif n_evento in [11, 90, 91]:
+        print("--- EVENTO: AVVISTAMENTO ALBATRO ---")
+        colpito, stato_gioco["merci"], decisione_sparo, qta_guad, armi_utilizzate = avvistamento_albatro(
+            stato_gioco["equipaggio"], stato_gioco["merci"], si_no,
+            conta_vivi, Min_sparo_difesa, stato_gioco["cibo"]
+        )
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
         if n_evento in li_eventi:
             li_eventi.remove(n_evento)
         if decisione_sparo:
@@ -1065,11 +1176,21 @@ while conta_set<=settimane and not game_over and punti_ammutinamento<100:
             else:
                 print(f"L'albatro non è stato colpito (usate {armi_utilizzate} armi).")
         else:
+<<<<<<< HEAD
             print("L'equipaggio ha deciso di non sparare all'albatro il viaggio prosegue :).")
 
     elif n_evento==12:
         print("--- EVENTO: AVVISTAMENTO SCIALUPPA ---")
         decisione_scialuppa,merci_precedente=avvistamento_scialuppa(si_no,stato_gioco["merci"],RUOLI,stato_gioco["equipaggio"])
+=======
+            print("L'equipaggio ha deciso di non sparare all'albatro.")
+
+    elif n_evento == 12:
+        print("--- EVENTO: AVVISTAMENTO SCIALUPPA ---")
+        decisione_scialuppa, merci_precedente = avvistamento_scialuppa(
+            si_no, stato_gioco["merci"], RUOLI, stato_gioco["equipaggio"]
+        )
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
         if decisione_scialuppa:
             print("Avete salvato 4 naufraghi e guadagnato merci extra!")
             if merci_precedente:
@@ -1078,6 +1199,7 @@ while conta_set<=settimane and not game_over and punti_ammutinamento<100:
             print("Avete deciso di ignorare la scialuppa.")
         li_eventi.remove(12)
 
+<<<<<<< HEAD
     elif n_evento==13:
   
         sett_perse,settimane,presenza=raffiche_di_vento(stato_gioco["equipaggio"],settimane,"navigatore")
@@ -1145,6 +1267,97 @@ while conta_set<=settimane and not game_over and punti_ammutinamento<100:
     
     if punti_ammutinamento>=100:
         game_over=True
+=======
+    elif n_evento == 13:
+        print("--- EVENTO: RAFFICHE DI VENTO ---")
+        sett_perse, settimane, presenza = raffiche_di_vento(
+            stato_gioco["equipaggio"], settimane, "navigatore"
+        )
+        if presenza:
+            print(f"Il navigatore ha guidato la nave, perdendo solo 1 settimana aggiuntiva.")
+        else:
+            print(f"Senza navigatore le raffiche ci hanno fatto perdere {sett_perse} settimane aggiuntive!")
+        li_eventi.remove(13)
+
+    elif n_evento == 14:
+        print("--- EVENTO: EPIDEMIA ---")
+        malati, morti, guariti, med_persi, delta_morale = epidemia(
+            stato_gioco["equipaggio"], stato_gioco["merci"], ce_ruolo, delta_morale
+        )
+        print(f"  Malati: {malati}  |  Morti: {morti}  |  Guariti: {guariti}  |  Medicinali usati: {med_persi}")
+        if morti > 0:
+            print(f"  {morti} membri non ce l'hanno fatta.")
+        li_eventi.remove(14)
+
+    elif n_evento == 15:
+        print("--- EVENTO: ATTACCO PIRATA ---")
+        uomini_persi, n_pirati, n_difensori, delta_morale = attacco_pirata(
+            stato_gioco["equipaggio"], conta_vivi, stato_gioco["merci"],
+            Min_sparo_difesa, delta_morale
+        )
+        print(f"  Pirati: {n_pirati}  |  Difensori: {n_difensori}  |  Uomini persi: {uomini_persi}")
+        li_eventi.remove(15)
+
+    elif n_evento == 16:
+        print("--- EVENTO: AVVISTAMENTO ISOLA ---")
+        esito_isola, merci_prec_isola, sett_agg_isola = avvistamento_isola(
+            si_no, colpito, stato_gioco["merci"]
+        )
+        if esito_isola == "non raggiunta":
+            print("Avete deciso di non andare sull'isola.")
+        elif esito_isola == "non abitata":
+            print(f"L'isola era desabitata. Avete perso {sett_agg_isola} settimane.")
+            settimane += sett_agg_isola
+        elif esito_isola == "ostile":
+            print(f"Gli abitanti erano ostili! Siete fuggiti perdendo {sett_agg_isola} settimane.")
+            settimane += sett_agg_isola
+        else:
+            print(f"Isola abitata e amichevole! Avete ottenuto merci extra (costo: {sett_agg_isola} settimane).")
+            settimane += sett_agg_isola
+        li_eventi.remove(16)
+
+    elif n_evento == 17:
+        print("--- NESSUN IMPREVISTO ---\nLa settimana trascorre tranquilla.")
+        li_eventi.remove(17)
+
+    elif n_evento == 18:
+        print("--- NESSUN IMPREVISTO ---\nLa settimana trascorre tranquilla.")
+
+
+    print("\n--- CONTROLLO SCORTE RESIDUE ---")
+    settimane_restanti = settimane - conta_set 
+
+    delta_morale = Controllo_scorte(
+        stato_gioco,
+        CATALOGO_CIBO,
+        max(settimane_restanti, 1),
+        moltiplicatori_razioni,
+        delta_morale
+    )
+
+    razione_dimezzata = any(v < 1 for v in moltiplicatori_razioni.values())
+
+    input("\nPremi INVIO per aggiornare il morale e vedere il riepilogo...")
+    stato_gioco["equipaggio"] = aggiungi_mor_equip(stato_gioco["equipaggio"], delta_morale)
+
+    settimane = ricalcolo_settimane(settimane, stato_gioco["equipaggio"], conta_vivi)
+
+    calcola_riepilogo(stato_gioco["merci"], stato_gioco["cibo"], stato_gioco["equipaggio"])
+
+    differenza_settimane = settimane - sett_vecchie   # settimane aggiunte rispetto alle 8 originali
+    punti_ammutinamento = ammutinamento(
+        razione_dimezzata,
+        ce_ruolo,
+        stato_gioco["equipaggio"],
+        colpito,
+        conta_vivi,
+        max(differenza_settimane, 0)
+    )
+    printare_ammutinamento_cond(punti_ammutinamento)
+    if punti_ammutinamento >= 100:
+        game_over = True
+        break
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
 
     Salva(stato_gioco)
 
@@ -1227,4 +1440,7 @@ if not game_over:
             Bad_ending()
 
 print("\n--- FINE PROGRAMMA ---")
+<<<<<<< HEAD
 p=input("PREMI UN TASTO PER CHIUDERE")
+=======
+>>>>>>> d536658edf784a49c70f15431103be5960250b17
