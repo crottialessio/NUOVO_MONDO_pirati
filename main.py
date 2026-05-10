@@ -1037,213 +1037,153 @@ if scelta == "s":
 
 # parte cars------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    fase_ingaggio() 
+    fase_acquisto_cibo() 
+    fase_acquisto_merci() 
+    riepilogo_pre_partenza()
 
 # parte crotz------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-while settimane>=conta_set and game_over!=True and punti_ammutinamento<100:
+while settimane >= conta_set and not game_over and punti_ammutinamento < 100:
     
-    if conta_vivi(stato_gioco["equipaggio"])==0:
-        print("tutti i membri sono morti, il gioco finisce qui, GAME OVER")
-        game_over=True
+    if conta_vivi(stato_gioco["equipaggio"]) == 0:
+        print("Tutti i membri sono morti, il gioco finisce qui. GAME OVER")
+        game_over = True
     else:
+        n_evento = random.choice(li_eventi)
+        
+        print(f"\n----- SETTIMANA {conta_set} -----")
+        
+        
+        if n_evento == 0:
+            pg_morto, delta_morale = uomo_in_mare(stato_gioco["equipaggio"], delta_morale)
+            print(f"--- EVENTO UOMO IN MARE --- \nIl {pg_morto.upper()} è caduto in mare ed è MORTO")
+            if 0 in li_eventi:
+                li_eventi.remove(0)
+        
+        elif n_evento == 1:
+            stato_gioco["cibo"], perdite_verdure = prova_unica(stato_gioco["cibo"], "verdura", qta_da_perdere)
+            print(f"--- EVENTO VERDURA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_verdure:.1f} Kg di VERDURE")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 2:
+            stato_gioco["cibo"], perdite_frutta = prova_unica(stato_gioco["cibo"], "frutta", qta_da_perdere)
+            print(f"--- EVENTO FRUTTA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_frutta:.1f} Kg di FRUTTA")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 3:
+            stato_gioco["cibo"], perdite_carne = prova_unica(stato_gioco["cibo"], "carne", qta_da_perdere)
+            print(f"--- EVENTO CARNE IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_carne:.1f} Kg di CARNE")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 4:
+            stato_gioco["cibo"], perdite_acqua = prova_unica(stato_gioco["cibo"], "acqua", qta_da_perdere)
+            print(f"--- EVENTO ACQUA IN MARE --- \nUna violenta tempesta ha trasportato in mare {perdite_acqua:.1f} BARILI D'ACQUA")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 5:
+            stato_gioco["cibo"], qta_pescata = tempesta_miracolosa(stato_gioco["cibo"], "carne")
+            print(f"--- EVENTO PESCA MIRACOLOSA --- \nDurante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 6:
+            stato_gioco["cibo"], qta_acqua = tempesta_miracolosa(stato_gioco["cibo"], "acqua")
+            print(f"--- EVENTO TEMPESTA MIRACOLOSA --- \nDurante la tempesta alcuni uomini hanno raccolto {qta_acqua} BARILI D'ACQUA")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 7:
+            stato_gioco["equipaggio"], settimane, delta_morale, morale_agg = vento_favorevole(settimane, stato_gioco["equipaggio"], delta_morale)
+            print(f"--- EVENTO VENTO FAVOREVOLE --- \nUn vento favorevole accorcia il viaggio di 1 settimana!\nMorale +{morale_agg} per ogni membro")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 8:
+            stato_gioco["merci"], perdite_medicinali = prova_unica(stato_gioco["merci"], "medicinali", qta_da_perdere)
+            print(f"--- EVENTO CATTIVO TEMPO --- \nIl cattivo tempo ha rovesciato {perdite_medicinali:.1f} BOTTIGLIE DI MEDICINALI")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 9:
+            stato_gioco["merci"], perdite_armi = prova_unica(stato_gioco["merci"], "armi", qta_da_perdere)
+            print(f"--- EVENTO ONDATA --- \nUn'onda ha fatto perdere {perdite_armi:.1f} ARMI")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento == 10:
+            stato_gioco["merci"], perdite_stoffe = prova_unica(stato_gioco["merci"], "stoffa", qta_da_perdere)
+            print(f"--- EVENTO INFESTAZIONE RATTI --- \nI ratti hanno rovinato {perdite_stoffe:.1f} STOFFE")
+            if n_evento in li_eventi: li_eventi.remove(n_evento)
+        
+        elif n_evento in [11, 90, 91]:
+            print("--- EVENTO: AVVISTAMENTO ALBATRO ---")
+            colpito, stato_gioco["merci"], decisone_sparo, qta_guad, armi_utilizzate = avvistamento_albatro(
+                stato_gioco["equipaggio"], stato_gioco["merci"], si_no, conta_vivi, Min_sparo_difesa, stato_gioco["cibo"]
+            )
+            li_eventi.remove(n_evento) if n_evento in li_eventi else None
+            if decisone_sparo:
+                if colpito:
+                    print(f"L'albatro è stato abbattuto! +{qta_guad} kg di carne (usate {armi_utilizzate} armi)")
+                else:
+                    print(f"L'albatro non è stato colpito (usate {armi_utilizzate} armi)")
+            else:
+                print("L'equipaggio ha deciso di non sparare all'albatro.")
+        
+        elif n_evento == 12:
+            
+            print("--- EVENTO: AVVISTAMENTO SCIALUPPA ---")
+            li_eventi.remove(n_evento)
+            deciosione_scialuppa, merci_precedente = avvistamento_scialuppa(si_no, stato_gioco["merci"], RUOLI, stato_gioco["equipaggio"])
 
-        n_evento=random.choice(li_eventi)
-        
-        
-        print(f"-----SETTIMANA {conta_set}-----")
-        if n_evento==0:
-            pg_morto,delta_morale=uomo_in_mare(stato_gioco["equipaggio"],delta_morale)
-            print(f"---EVENTO UMOMO IN MARE--- \n il {pg_morto.upper()} è caduto in mare ed è MORTO")
-            li_eventi.remove(0)
-        
-        
-        elif n_evento==1:
-            stato_gioco["cibo"],perdite_verdure=prova_unica(stato_gioco["cibo"],"verdura",qta_da_perdere)
-            print(f"---EVENTO VERDURA IN MARE--- \n una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_verdure} Kg di VERDURE")
-            li_eventi.remove(n_evento)
-    
-    
-        elif n_evento==2:
-            stato_gioco["cibo"],perdite_frutta=prova_unica(stato_gioco["cibo"],"frutta",qta_da_perdere)
-            print(f"---EVENTO FRUTTA IN MARE--- \n una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_frutta} Kg di FRUTTA")
-            li_eventi.remove(n_evento)
-        
-        
-        elif n_evento==3:
-            stato_gioco["cibo"],perdite_carne=prova_unica(stato_gioco["cibo"],"carne",qta_da_perdere)
-            print(f"---EVENTO CARNE IN MARE--- \n una violenta tempesta ha trasportato in mare delle casse che contenevano {perdite_carne} Kg di CARNE")
-            li_eventi.remove(n_evento)
-        
-        
-        elif n_evento==4:
-            stato_gioco["cibo"],perdite_acqua=prova_unica(stato_gioco["cibo"],"acqua",qta_da_perdere)
-            print(f"---EVENTO ACQUA IN MARE--- \n una violenta tempesta ha trasportato in mare {perdite_acqua} BARILI D'ACQUA")
-            li_eventi.remove(n_evento)
-        
-        
-        elif n_evento==5:
-            stato_gioco["cibo"],qta_pescata=tempesta_miracolosa(stato_gioco["cibo"],"carne")
-            print(f"---EVENTO PESCA MIRACOLOSA--- \n durante la settimana di quiete l'equipaggio ha pescato {qta_pescata} kg di CARNE")
-            li_eventi.remove(n_evento)
-    
-    
-        elif n_evento==6:
-            stato_gioco["cibo"],qta_acqua=tempesta_miracolosa(stato_gioco["cibo"],"acqua")
-            print(f"---EVENTO TEMPESTA MIRACOLOSA --- \n durante la tempesta dei coraggiosi uomini hanno riempito d'ACQUA {qta_acqua} BARILI VUOTI")
-            li_eventi.remove(n_evento)
-    
-    
-        elif n_evento==7:
-            stato_gioco["equipaggio"],settimane,delta_morale,morale_agg=vento_favorevole(settimane,stato_gioco["equipaggio"],delta_morale)
-            print(f"---EVENTO VENTO FAVOREVOLE--- \n un vento favorevole, permette di ACCORCIARE di 1 SETTIMANA il viaggio \n ogni membro dell'equipaggio AUMENTA il MORALE di {morale_agg}")
-            li_eventi.remove(n_evento)
-    
-    
-        elif n_evento==8:
-            stato_gioco["merci"],perdite_medicinali=prova_unica(stato_gioco["merci"],"medicinali",qta_da_perdere)
-            print(f"---EVENTO CATTIVO TEMPO--- \n il cattivo tempo ha rovesciato {perdite_medicinali} BOTTIGLIE DI MEDICINALI")
-            li_eventi.remove(n_evento)
-    
-    
-        elif n_evento==9:
-            stato_gioco["merci"],perdite_armi=prova_unica(stato_gioco["merci"],"armi",qta_da_perdere)
-            print(f"---EVENTO ONDATA--- \n una onda altissima ha trasportato in mare {perdite_armi} ARMI")
-            li_eventi.remove(n_evento)
-        
-        elif n_evento==10:
-            stato_gioco["merci"],perdite_stoffe=prova_unica(stato_gioco["merci"],"stoffa",qta_da_perdere)
-            print(f"---EVENTO INFESTAZIONE RATTI--- \n dei RATTI hanno mordicchiato e rovinato {perdite_stoffe} STOFFE :(")
-            li_eventi.remove(n_evento)
-        
-        
-        elif n_evento==11 or n_evento==90 or n_evento==91:
-            print("---EVENTO: AVVISTAMENTO ALBATRO--- \n in cielo viene avvistato un albatro, in caso di abbattimento vi sarà un aumento della scorta di CARNE")
-            colpito,stato_gioco["merci"],decisone_sparo,qta_guad,armi_utilizzate=avvistamento_albatro(stato_gioco["equipaggio"],stato_gioco["merci"],si_no,conta_vivi,Min_sparo_difesa,stato_gioco["cibo"])
-            li_eventi.remove(n_evento)
-            if decisone_sparo==True:
-                if colpito==True:print(f"l'albatro è stato abbattuto, sono state state utilizzate {armi_utilizzate} ARMI, e l'equipaggio ha raccolto {qta_guad} di CARNE")
-                else:print(f"l'albatro non è stato colpito, sono state usate/a {armi_utilizzate} ARMI")
-            else:print("L'equipaggio non ha voluto sparare all'albatro, il viaggio prosegue")
-        
-        
-        elif n_evento==12:
-            print("---EVENTO: AVVISTAMENTO SCIALUPPA---\n viene avvistata una scialuppa con 4 uomini")
-            li_eventi.remove(n_evento)
-            deciosione_scialuppa,merci_precedente=avvistamento_scialuppa(si_no,stato_gioco["merci"],RUOLI,stato_gioco["equipaggio"])
-            if deciosione_scialuppa==True:
-                uomini_id=list(stato_gioco["equipaggio"].keys())
-                naufraghi_id=uomini_id[-4:]
-                print(f"gli uomini sono stati salvati, e hanno le seguenti caratteristiche:")
-                for id in naufraghi_id:
-                    print(f"{stato_gioco['equipaggio'][id]['ruolo'].upper()} con morale:{stato_gioco['equipaggio'][id]['morale']}")
-                print("dai naufraghi sono stati recuperati (quantità/kg):")
-                for m in stato_gioco["merci"]:
-                    qta_recuperata=stato_gioco["merci"][m]-merci_precedente[m]
-                    print(qta_recuperata,m)
-    
-    
-        elif n_evento==13:
-            li_eventi.remove(n_evento)
-            print("---EVENTO: EPIDEMIA---\n L'epidemia si abbatte sull'equipaggio")
-            n_malati,n_morti,n_guariti,medicinali_usati,delta_morale=epidemia(stato_gioco["equipaggio"],stato_gioco["merci"],ce_ruolo,delta_morale)
-            print(f"l'epidemia ha portato {n_malati} MALATI, di cui {n_morti} sono MORTI")
-            if n_guariti>=1:print(f"grazie alla presenza del medico, sono stati curati {n_guariti} membri, ma sono state usate {medicinali_usati} bottiglie di MEDICINALE")
-        
-        
-        elif n_evento==14:
-            li_eventi.remove(n_evento)
-            n_morti_xpir,num_pirati,n_armi_usate,delta_morale=attacco_pirata(stato_gioco["equipaggio"],conta_vivi,stato_gioco["merci"],Min_sparo_difesa,delta_morale)
-            print(f"---EVENTO: ATTACCO PIRATA---\n una nave composta da {num_pirati} pirati, sferra un attacco \n sono morti {n_morti_xpir} membri dell tuo equipaggio, e sono state usate {n_armi_usate} ARMI")
-        
-        
-        elif n_evento==15:
-            li_eventi.remove(n_evento)
-            giorni_in_piu,settimane,presenza_salvatore=raffiche_di_vento(stato_gioco["equipaggio"],settimane,"meccanico")
-            if presenza_salvatore==True:print(f"---EVENTO: DANNI AL TIMONE--- \n l'urto con lo scoglio ha causato la rottura del timone il viaggio si allunga di {giorni_in_piu} settimana \n GRAZIE AL MECCANICO il danno è stato riparato in fretta")
-            else:print(f"---EVENTO: DANNI AL TIMONE--- \n l'urto con lo scoglio ha causato la rottura del timone il viaggio si allunga di {giorni_in_piu} settimane \n per via dell'ASSENZA DEL MECCANICO il timone viene riparato mooolto lentamente")
-    
-    
-        elif n_evento==16:
-            li_eventi.remove(n_evento)
-            giorni_in_piu,settimane,presenza_salvatore=raffiche_di_vento(stato_gioco["equipaggio"],settimane,"navigatore")
-            if presenza_salvatore==True:print(f"---EVENTO: RAFFICHE DI VENTO--- \n a causa di FORTI RAFFICHE DI VENTO la nave si allontana dalla rotta iniziale, il viaggio si allunga di {giorni_in_piu} settimana \n GRAZIE AL NAVIGATORE la situazione è stata risolta velocemente")
-            else:print(f"---EVENTO: RAFFICHE DI VENTO--- \n a causa di FORTI RAFFICHE DI VENTO la nave si allontana dalla rotta iniziale, il viaggio si allunga di {giorni_in_piu} settimane \n per via dell' ASSENZA DEL NAVIGATORE la situazione è stata risolta mooolto lentamente")
-        
-        
-        elif n_evento==17:
-            li_eventi.remove(n_evento)
-            dec_ab_isola,merce_precedente,sett_in_piu=avvistamento_isola(si_no,colpito,stato_gioco["merci"])
-            if dec_ab_isola=="non raggiunta":print("l'equipaggio a preferito non raggiungere l'isola, il viaggio prosegue")
-            elif dec_ab_isola=="non abitata":
-                settimane+=sett_in_piu
-                print(f"l'isola non è abitata, l'equipaggio prosegue il viaggio, esso si allunga di {sett_in_piu} SETTIMANE")
-            elif dec_ab_isola=="ostile":
-                settimane+=sett_in_piu
-                print (f"l'isola è ostile, l'equipaggio scappa dall'isola, il viaggio si allunga di {sett_in_piu} SETTIMANE")
-            elif dec_ab_isola=="abitata":
-                settimane+=sett_in_piu
-                print(f"l'isola è abitata,, il viaggio si allunga di {sett_in_piu} SETTIMANE... l'equipaggio riceve dalla popolazione locale i seguenti doni:")
-                for m in stato_gioco["merci"]:
-                    qta_recuperata=stato_gioco["merci"][m]-merce_precedente[m]
-                    print(qta_recuperata,m)
-        elif n_evento==18:
-            print("NON SUCCEDE NULLA DI SPECIALE DURANTE LA SETTIMANA")
+        elif n_evento == 18:
+            print("--- NESSUN IMPREVISTO ---")
 
-        input("premi qualsiasi tasto per andare avanti")
-        diff_sett=settimane-SETTIMANE
-        stato_gioco["equipaggio"]=aggiungi_mor_equip(stato_gioco["equipaggio"],delta_morale)
-        calcola_riepilogo(stato_gioco["merci"],stato_gioco["cibo"],stato_gioco["equipaggio"])
-        punti_ammutinamento=ammutinamento(True,ce_ruolo,stato_gioco["equipaggio"],colpito,conta_vivi,diff_sett)
-        printare_ammutinamento_cond(punti_ammutinamento)
-        sett_vecchie=settimane
-        settimane=ricalcolo_settimane(settimane,stato_gioco["equipaggio"],conta_vivi)
-        if settimane>sett_vecchie:print("L'equipaggio è demoralizzato e il viaggo si ALLUNGA DI 1 SETTIMANA")
-        conta_set+=1
+        
+        print("\n--- CONTROLLO SCORTE RESIDUE ---")
+        settimane_restanti = settimane - conta_set + 1
+        
+        delta_morale = Controllo_scorte(
+            stato_gioco,
+            CATALOGO_CIBO,
+            settimane_restanti,
+            moltiplicatori_razioni,
+            delta_morale
+        )
+
+        
+        input("\nPremi INVIO per aggiornare il morale e vedere il riepilogo...")
+        
+        stato_gioco["equipaggio"] = aggiungi_mor_equip(stato_gioco["equipaggio"], delta_morale)
+        calcola_riepilogo(stato_gioco["merci"], stato_gioco["cibo"], stato_gioco["equipaggio"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
